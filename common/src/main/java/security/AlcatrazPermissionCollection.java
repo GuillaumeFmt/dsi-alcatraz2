@@ -1,4 +1,4 @@
-package core;
+package security;
 
 import java.security.Permission;
 import java.security.PermissionCollection;
