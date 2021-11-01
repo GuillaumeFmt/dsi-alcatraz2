@@ -12,5 +12,14 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>at.falb.games.alcatraz.api</groupId>
+            <artifactId>alcatraz-lib.jar</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../alcatraz-lib.jar</systemPath>
+        </dependency>
+    </dependencies>
 
 </project>
