@@ -1,4 +1,4 @@
-package ports;
+package ports.out;
 
 import models.ClientMove;
 import models.ClientPlayer;

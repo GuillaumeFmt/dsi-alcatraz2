@@ -1,4 +1,4 @@
-package adapters;
+package adapters.out;
 
 import models.ClientMove;
 import models.ClientPlayer;
