@@ -1,10 +1,13 @@
 package core;
 
-import adapters.ClientMoverRMIAdapter;
-import ports.ClientMover;
+import adapters.in.AlcatrazGameAdapter;
+import adapters.out.ClientMoverRMIAdapter;
+import core.usecase.AcknowledgeUseCase;
+import core.usecase.MoveReceiverUseCase;
+import ports.out.ClientMover;
+import ports.in.MoveReceiver;
 import security.AlcatrazSecurityPolicy;
 
-import java.rmi.RemoteException;
 import java.security.Policy;
 
 public class Client {
@@ -16,7 +19,11 @@ public class Client {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1", 9871);
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1", 9871, new AcknowledgeUseCase());
+
+        MoveReceiver moveReceiver = new MoveReceiverUseCase(clientMover);
+
+        var alcatrazGame = new AlcatrazGameAdapter(moveReceiver);
 
         while (true) {
 

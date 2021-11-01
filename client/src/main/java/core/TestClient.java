@@ -1,8 +1,9 @@
 package core;
 
-import adapters.ClientMoverRMIAdapter;
+import adapters.out.ClientMoverRMIAdapter;
+import core.usecase.AcknowledgeUseCase;
 import models.ClientMove;
-import ports.ClientMover;
+import ports.out.ClientMover;
 import security.AlcatrazSecurityPolicy;
 
 import java.security.Policy;
@@ -16,7 +17,7 @@ public class TestClient {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872);
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872, new AcknowledgeUseCase());
 
         System.out.println(clientMover.sendMove(new ClientMove()));
     }
