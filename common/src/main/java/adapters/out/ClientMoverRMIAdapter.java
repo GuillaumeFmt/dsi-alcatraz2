@@ -15,13 +15,15 @@ public class ClientMoverRMIAdapter implements ClientMover {
 
     private Registry registry;
     private final String clientName;
+    private final String remoteName;
     private final int clientPort;
     private final ClientMoverRMI clientMoverStub;
     private ClientMoverRMI clientMoverProxy;
 
-    public ClientMoverRMIAdapter(int serverPort, String clientName, int clientPort, ClientAcknowledge clientAcknowledge) {
+    public ClientMoverRMIAdapter(int serverPort, String clientName, int clientPort, String remoteName, ClientAcknowledge clientAcknowledge) {
         this.clientName = clientName;
         this.clientPort = clientPort;
+        this.remoteName = remoteName;
         this.clientMoverStub = new ClientMoverRMIStub(clientAcknowledge);
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
@@ -59,6 +61,6 @@ public class ClientMoverRMIAdapter implements ClientMover {
     }
 
     private ClientMoverRMI getClientMoverProxy() throws NotBoundException, RemoteException {
-        return (ClientMoverRMI) registry.lookup(clientName);
+        return (ClientMoverRMI) registry.lookup(remoteName);
     }
 }

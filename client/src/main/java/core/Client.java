@@ -19,7 +19,7 @@ public class Client {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1", 9871, new AcknowledgeUseCase());
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1", 9871, "Client 2", new AcknowledgeUseCase());
 
         MoveReceiver moveReceiver = new MoveReceiverUseCase(clientMover);
 

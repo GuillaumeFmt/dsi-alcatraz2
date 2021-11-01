@@ -17,7 +17,7 @@ public class TestClient {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872, new AcknowledgeUseCase());
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872, "Client 1", new AcknowledgeUseCase());
 
         System.out.println(clientMover.sendMove(new ClientMove()));
     }
