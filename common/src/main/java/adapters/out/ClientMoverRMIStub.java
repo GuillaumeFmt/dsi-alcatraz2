@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 
 public class ClientMoverRMIStub implements ClientMoverRMI {
 
-    private ClientAcknowledge clientAcknowledge;
+    private final ClientAcknowledge clientAcknowledge;
 
     public ClientMoverRMIStub(ClientAcknowledge clientAcknowledge) {
         this.clientAcknowledge = clientAcknowledge;

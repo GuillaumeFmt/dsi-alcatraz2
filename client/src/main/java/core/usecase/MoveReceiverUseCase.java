@@ -16,4 +16,9 @@ public class MoveReceiverUseCase implements MoveReceiver {
     public void updateLocalMove(ClientMove clientMove) {
         // TODO
     }
+
+    @Override
+    public void moveDoneMessage() {
+        System.out.println("Move done!");
+    }
 }
