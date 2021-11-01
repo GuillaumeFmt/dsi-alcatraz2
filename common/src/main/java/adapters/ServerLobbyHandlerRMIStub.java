@@ -4,6 +4,7 @@ import models.ClientPlayer;
 import models.Lobby;
 
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
 
     @Override
     public List<Lobby> currentLobbies() throws RemoteException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -25,16 +26,16 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
 
     @Override
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
-        return null;
+        return false;
     }
 
     @Override
     public Boolean startGame(Lobby lobby) throws RemoteException {
-        return null;
+        return false;
     }
 }
