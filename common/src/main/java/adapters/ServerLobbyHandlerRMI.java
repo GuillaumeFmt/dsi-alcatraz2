@@ -1,13 +1,14 @@
-package ports;
+package adapters;
 
 import models.ClientPlayer;
 import models.Lobby;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
-public interface ServerLobbyHandler {
+public interface ServerLobbyHandlerRMI extends Remote {
 
     UUID register (ClientPlayer clientPlayer) throws RemoteException;
 
@@ -20,5 +21,4 @@ public interface ServerLobbyHandler {
     Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException;
 
     Boolean startGame(Lobby lobby) throws RemoteException;
-
 }
