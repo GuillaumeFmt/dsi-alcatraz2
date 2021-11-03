@@ -24,7 +24,7 @@ public class MoveListenerHandler implements MoveListener {
 
     @Override
     public void moveDone(Player player, Prisoner prisoner, int i, int i1, int i2) {
-        moveReceiver.moveDoneMessage();
+        moveReceiver.moveDoneMessage(player.getId());
     }
 
     @Override

@@ -1,24 +1,29 @@
 package ports;
 
+import adapters.out.ClientMoverRMI;
 import models.ClientPlayer;
 import models.Lobby;
+import ports.in.ClientAcknowledge;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
 public interface ServerLobbyHandler {
 
-    UUID register (ClientPlayer clientPlayer) throws RemoteException;
+    UUID register (ClientPlayer clientPlayer);
 
-    List<Lobby> currentLobbies() throws RemoteException;
+    List<Lobby> currentLobbies() ;
 
-    Lobby createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException;
+    Lobby createLobby(String lobbyName, ClientPlayer clientPlayer);
 
-    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException;
+    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer);
 
-    Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException;
+    Boolean leaveLobby(ClientPlayer clientPlayer);
 
-    Boolean startGame(Lobby lobby) throws RemoteException;
+    Boolean startGame(Lobby lobby);
+
+    public void registerClientMoverStub(ClientAcknowledge clientAcknowledge);
+
+    public ClientMoverRMI getClientMoverProxy();
 
 }
