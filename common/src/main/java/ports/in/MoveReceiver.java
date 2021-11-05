@@ -6,5 +6,5 @@ public interface MoveReceiver {
 
     public void updateLocalMove(ClientMove clientMove);
 
-    public void moveDoneMessage();
+    public void moveDoneMessage(int playerId);
 }

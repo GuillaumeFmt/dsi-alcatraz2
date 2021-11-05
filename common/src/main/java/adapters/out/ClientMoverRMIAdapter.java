@@ -27,7 +27,7 @@ public class ClientMoverRMIAdapter implements ClientMover {
         this.clientMoverStub = new ClientMoverRMIStub(clientAcknowledge);
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
-            registerClientMoverStub();
+//            registerClientMoverStub();
             this.clientMoverProxy = getClientMoverProxy();
         } catch (RemoteException | NotBoundException e) {
             this.registry = null;

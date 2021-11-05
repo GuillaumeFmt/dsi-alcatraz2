@@ -16,6 +16,7 @@ public class ClientMoverRMIStub implements ClientMoverRMI {
 
     @Override
     public boolean sendMove(ClientMove clientMove) throws RemoteException {
+        System.out.println("received a move"); // TODO just for demonstration -> remove
         return clientAcknowledge.sendAcknowledge();
     }
 

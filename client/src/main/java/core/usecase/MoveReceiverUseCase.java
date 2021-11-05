@@ -18,7 +18,8 @@ public class MoveReceiverUseCase implements MoveReceiver {
     }
 
     @Override
-    public void moveDoneMessage() {
-        System.out.println("Move done!");
+    public void moveDoneMessage(int playerId) {
+        System.out.println("Move done! " + playerId);
+        clientMover.sendMove(new ClientMove()); // TODO get the real local clientMove
     }
 }
