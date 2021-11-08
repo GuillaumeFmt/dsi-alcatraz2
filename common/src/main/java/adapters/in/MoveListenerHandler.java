@@ -3,28 +3,30 @@ package adapters.in;
 import at.falb.games.alcatraz.api.MoveListener;
 import at.falb.games.alcatraz.api.Player;
 import at.falb.games.alcatraz.api.Prisoner;
-import ports.in.MoveReceiver;
+import models.ClientMove;
+import ports.in.LocalMoveReceiver;
 
 public class MoveListenerHandler implements MoveListener {
 
-    private MoveReceiver moveReceiver;
+    private LocalMoveReceiver localMoveReceiver;
 
     private MoveListenerHandler() {
         // defeat instantiation
     }
 
-    private MoveListenerHandler(MoveReceiver moveReceiver) {
-        this.moveReceiver = moveReceiver;
+    private MoveListenerHandler(LocalMoveReceiver localMoveReceiver) {
+        this.localMoveReceiver = localMoveReceiver;
     }
 
-    public static MoveListenerHandler create(MoveReceiver moveReceiver) {
-        return new MoveListenerHandler(moveReceiver);
+    public static MoveListenerHandler create(LocalMoveReceiver localMoveReceiver) {
+        return new MoveListenerHandler(localMoveReceiver);
     }
 
 
     @Override
-    public void moveDone(Player player, Prisoner prisoner, int i, int i1, int i2) {
-        moveReceiver.moveDoneMessage(player.getId());
+    public void moveDone(Player player, Prisoner prisoner, int rowOrCol, int row, int col) {
+        localMoveReceiver.moveDoneMessage(player, prisoner, rowOrCol, row, col);
+        localMoveReceiver.updateLocalMove(new ClientMove(0, player, prisoner, rowOrCol, row, col));
     }
 
     @Override
