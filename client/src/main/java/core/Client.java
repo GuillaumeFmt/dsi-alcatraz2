@@ -3,12 +3,13 @@ package core;
 import adapters.ServerLobbyHandlerRMIAdapter;
 import adapters.in.AlcatrazGameAdapter;
 import adapters.out.ClientMoverRMIAdapter;
-import core.usecase.AcknowledgeUseCase;
+import core.usecase.RemoteMoveReceiverUseCase;
 import core.usecase.GameInitializer;
-import core.usecase.MoveReceiverUseCase;
+import core.usecase.LocalMoveReceiverUseCase;
+import models.GameState;
 import ports.ServerLobbyHandler;
 import ports.out.ClientMover;
-import ports.in.MoveReceiver;
+import ports.in.LocalMoveReceiver;
 import security.AlcatrazSecurityPolicy;
 
 import java.io.IOException;
@@ -31,13 +32,12 @@ public class Client {
         // TODO wait for keyboard input
         System.in.read();
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1", 9871, "Client 2", new AcknowledgeUseCase());
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1", 9871, "Client 2", new RemoteMoveReceiverUseCase());
         // clientMover is "Client 2" in this case
 
+        LocalMoveReceiver localMoveReceiver = new LocalMoveReceiverUseCase(clientMover);
 
-        MoveReceiver moveReceiver = new MoveReceiverUseCase(clientMover);
-
-        var alcatrazGame = new AlcatrazGameAdapter(moveReceiver, 0);
+        var alcatrazGame = new AlcatrazGameAdapter(localMoveReceiver, 0, GameState.getGameStateInstance());
 
         while (true) {
 

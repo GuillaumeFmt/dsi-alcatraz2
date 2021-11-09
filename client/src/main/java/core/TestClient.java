@@ -3,12 +3,12 @@ package core;
 import adapters.ServerLobbyHandlerRMIAdapter;
 import adapters.in.AlcatrazGameAdapter;
 import adapters.out.ClientMoverRMIAdapter;
-import core.usecase.AcknowledgeUseCase;
+import core.usecase.RemoteMoveReceiverUseCase;
 import core.usecase.GameInitializer;
-import core.usecase.MoveReceiverUseCase;
-import models.ClientMove;
+import core.usecase.LocalMoveReceiverUseCase;
+import models.GameState;
 import ports.ServerLobbyHandler;
-import ports.in.MoveReceiver;
+import ports.in.LocalMoveReceiver;
 import ports.out.ClientMover;
 import security.AlcatrazSecurityPolicy;
 
@@ -32,13 +32,13 @@ public class TestClient {
         // TODO wait for keyboard input
         System.in.read();
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872, "Client 1", new AcknowledgeUseCase());
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872, "Client 1", new RemoteMoveReceiverUseCase());
 
-        MoveReceiver moveReceiver = new MoveReceiverUseCase(clientMover);
+        LocalMoveReceiver localMoveReceiver = new LocalMoveReceiverUseCase(clientMover);
 
-        System.out.println(clientMover.sendMove(new ClientMove()));
+//        System.out.println(clientMover.sendMove(new ClientMove()));
 
-        var alcatrazGame = new AlcatrazGameAdapter(moveReceiver, 1);
+        var alcatrazGame = new AlcatrazGameAdapter(localMoveReceiver, 1, GameState.getGameStateInstance());
 
         while (true) {
 

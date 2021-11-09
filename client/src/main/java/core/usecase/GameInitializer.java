@@ -11,6 +11,6 @@ public class GameInitializer {
     }
 
     public void init() {
-        serverLobbyHandler.registerClientMoverStub(new AcknowledgeUseCase());
+        serverLobbyHandler.registerClientMoverStub(new RemoteMoveReceiverUseCase());
     }
 }

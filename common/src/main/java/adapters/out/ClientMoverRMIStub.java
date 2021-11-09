@@ -2,22 +2,23 @@ package adapters.out;
 
 import models.ClientMove;
 import models.ClientPlayer;
-import ports.in.ClientAcknowledge;
+import ports.in.RemoteMoveReceiver;
 
 import java.rmi.RemoteException;
 
 public class ClientMoverRMIStub implements ClientMoverRMI {
 
-    private final ClientAcknowledge clientAcknowledge;
+    private final RemoteMoveReceiver remoteMoveReceiver;
 
-    public ClientMoverRMIStub(ClientAcknowledge clientAcknowledge) {
-        this.clientAcknowledge = clientAcknowledge;
+    public ClientMoverRMIStub(RemoteMoveReceiver remoteMoveReceiver) {
+        this.remoteMoveReceiver = remoteMoveReceiver;
     }
 
     @Override
     public boolean sendMove(ClientMove clientMove) throws RemoteException {
-        System.out.println("received a move"); // TODO just for demonstration -> remove
-        return clientAcknowledge.sendAcknowledge();
+        System.out.println("received a move - " + clientMove.getPlayer().getId()); // TODO just for demonstration -> remove
+        remoteMoveReceiver.updateLocalGameState(clientMove);
+        return remoteMoveReceiver.sendAcknowledge();
     }
 
     @Override

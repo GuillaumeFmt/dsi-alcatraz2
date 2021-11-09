@@ -2,14 +2,13 @@ package adapters.out;
 
 import models.ClientMove;
 import models.ClientPlayer;
-import ports.in.ClientAcknowledge;
+import ports.in.RemoteMoveReceiver;
 import ports.out.ClientMover;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 
 public class ClientMoverRMIAdapter implements ClientMover {
 
@@ -17,17 +16,14 @@ public class ClientMoverRMIAdapter implements ClientMover {
     private final String clientName;
     private final String remoteName;
     private final int clientPort;
-    private final ClientMoverRMI clientMoverStub;
     private ClientMoverRMI clientMoverProxy;
 
-    public ClientMoverRMIAdapter(int serverPort, String clientName, int clientPort, String remoteName, ClientAcknowledge clientAcknowledge) {
+    public ClientMoverRMIAdapter(int serverPort, String clientName, int clientPort, String remoteName, RemoteMoveReceiver remoteMoveReceiver) {
         this.clientName = clientName;
         this.clientPort = clientPort;
         this.remoteName = remoteName;
-        this.clientMoverStub = new ClientMoverRMIStub(clientAcknowledge);
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
-//            registerClientMoverStub();
             this.clientMoverProxy = getClientMoverProxy();
         } catch (RemoteException | NotBoundException e) {
             this.registry = null;
@@ -53,11 +49,6 @@ public class ClientMoverRMIAdapter implements ClientMover {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private void registerClientMoverStub() throws RemoteException {
-        ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(clientMoverStub, clientPort);
-        registry.rebind(clientName, clientMoverRMIStub);
     }
 
     private ClientMoverRMI getClientMoverProxy() throws NotBoundException, RemoteException {

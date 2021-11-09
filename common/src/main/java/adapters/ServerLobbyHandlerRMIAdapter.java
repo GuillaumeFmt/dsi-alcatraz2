@@ -6,7 +6,7 @@ import at.falb.games.alcatraz.api.Player;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.ServerLobbyHandler;
-import ports.in.ClientAcknowledge;
+import ports.in.RemoteMoveReceiver;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -36,9 +36,9 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     }
 
     @Override
-    public void registerClientMoverStub(ClientAcknowledge clientAcknowledge) {
+    public void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
         try {
-            ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(clientAcknowledge), clientPort);
+            ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), clientPort);
             registry.rebind(clientName, clientMoverRMIStub);
         } catch (RemoteException e) {
             e.printStackTrace();
