@@ -18,7 +18,7 @@
             <artifactId>alcatraz-lib.jar</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/../alcatraz-lib.jar</systemPath>
+            <systemPath>${pom.basedir}/../alcatraz-lib.jar</systemPath>
         </dependency>
     </dependencies>
 

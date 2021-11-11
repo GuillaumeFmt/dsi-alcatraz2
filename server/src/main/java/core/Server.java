@@ -18,6 +18,7 @@ public class Server {
 
         Registry registry = LocateRegistry.createRegistry(9876);
 
+        System.out.println("Init done. Starting server loop");
         while (true) {
 
         }
