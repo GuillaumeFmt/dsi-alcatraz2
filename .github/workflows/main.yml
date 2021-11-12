@@ -44,5 +44,5 @@ jobs:
           username: user01
           password: $BxfkoGwDuAQTWT8
           port: 22
-          source: "server/target/*.jar"
+          source: "."
           target: "."
