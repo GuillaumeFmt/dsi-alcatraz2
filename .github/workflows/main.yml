@@ -47,7 +47,7 @@ jobs:
           port: 22
           source: "dsi-alcatraz/*"
           target: "."
-      - name: executing remote ssh commands using password
+      - name: Restart alcatraz Service on dsiars servers
         uses: appleboy/ssh-action@master
         with:
           host: "dsiars01.westeurope.cloudapp.azure.com,dsiars02.westeurope.cloudapp.azure.com,dsiars03.westeurope.cloudapp.azure.com"
