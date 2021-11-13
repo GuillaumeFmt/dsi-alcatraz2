@@ -1,4 +1,4 @@
-package core;
+package adapters;
 
 import spread.AdvancedMessageListener;
 import spread.MembershipInfo;
