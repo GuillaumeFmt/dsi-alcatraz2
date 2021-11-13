@@ -27,7 +27,7 @@ public class AdvancedMessageListenerAdapter implements AdvancedMessageListener {
             info("Group: " + membershipInfo.getGroup().toString());
             info("GroupID: " + membershipInfo.getGroupID().toString());
             info("GroupMembers: ");
-            Arrays.stream(membershipInfo.getMembers()).forEach(spreadGroup -> info(spreadMessage.toString()));
+            Arrays.stream(membershipInfo.getMembers()).forEach(spreadGroup -> info(spreadGroup.toString()));
         }
     }
     private void info(String message){
