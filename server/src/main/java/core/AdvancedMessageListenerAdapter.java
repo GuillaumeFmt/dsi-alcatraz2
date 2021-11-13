@@ -12,25 +12,20 @@ import java.util.logging.Logger;
 
 public class AdvancedMessageListenerAdapter implements AdvancedMessageListener {
 
-    private static Logger logger = Logger.getLogger(AdvancedMessageListenerAdapter.class.getName());
-
     @Override
     public void regularMessageReceived(SpreadMessage spreadMessage) {
-        info("Regular message: " + new String(spreadMessage.getData()));
+        System.out.println("Regular message: " + new String(spreadMessage.getData()));
     }
 
     @Override
     public void membershipMessageReceived(SpreadMessage spreadMessage) {
-        info("Received Membership Message");
+        System.out.println("Received Membership Message");
         MembershipInfo membershipInfo = spreadMessage.getMembershipInfo();
         if(membershipInfo.isRegularMembership()){
-            info("Group: " + membershipInfo.getGroup().toString());
-            info("GroupID: " + membershipInfo.getGroupID().toString());
-            info("GroupMembers: ");
-            Arrays.stream(membershipInfo.getMembers()).forEach(spreadGroup -> info(spreadGroup.toString()));
+            System.out.println("Group: " + membershipInfo.getGroup().toString());
+            System.out.println("GroupID: " + membershipInfo.getGroupID().toString());
+            System.out.println("GroupMembers: ");
+            Arrays.stream(membershipInfo.getMembers()).forEach(spreadGroup -> System.out.println(spreadGroup.toString()));
         }
-    }
-    private void info(String message){
-        logger.log(Level.INFO, message);
     }
 }
