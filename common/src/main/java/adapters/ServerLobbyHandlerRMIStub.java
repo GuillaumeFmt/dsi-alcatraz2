@@ -11,6 +11,7 @@ import java.util.UUID;
 public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     @Override
     public UUID register(ClientPlayer clientPlayer) throws RemoteException {
+        System.out.println("This is: " + clientPlayer.getPlayerName());
         return null;
     }
 

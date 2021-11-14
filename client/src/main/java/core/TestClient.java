@@ -24,15 +24,15 @@ public class TestClient {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Client 2", "Client 1", 9872);
+        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876,"Server");
 
-        GameInitializer gameInitializer = new GameInitializer(serverLobbyHandler);
+        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 2", 9872);
         gameInitializer.init();
 
         // TODO wait for keyboard input
         System.in.read();
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2", 9872, "Client 1", new RemoteMoveReceiverUseCase());
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1");
 
         LocalMoveReceiver localMoveReceiver = new LocalMoveReceiverUseCase(clientMover);
 

@@ -2,7 +2,6 @@ package adapters.out;
 
 import models.ClientMove;
 import models.ClientPlayer;
-import ports.in.RemoteMoveReceiver;
 import ports.out.ClientMover;
 
 import java.rmi.NotBoundException;
@@ -13,14 +12,10 @@ import java.rmi.registry.Registry;
 public class ClientMoverRMIAdapter implements ClientMover {
 
     private Registry registry;
-    private final String clientName;
     private final String remoteName;
-    private final int clientPort;
     private ClientMoverRMI clientMoverProxy;
 
-    public ClientMoverRMIAdapter(int serverPort, String clientName, int clientPort, String remoteName, RemoteMoveReceiver remoteMoveReceiver) {
-        this.clientName = clientName;
-        this.clientPort = clientPort;
+    public ClientMoverRMIAdapter(int serverPort, String remoteName) {
         this.remoteName = remoteName;
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
