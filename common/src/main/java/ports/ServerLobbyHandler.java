@@ -1,9 +1,7 @@
 package ports;
 
-import adapters.out.ClientMoverRMI;
 import models.ClientPlayer;
 import models.Lobby;
-import ports.in.RemoteMoveReceiver;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,9 +19,5 @@ public interface ServerLobbyHandler {
     Boolean leaveLobby(ClientPlayer clientPlayer);
 
     Boolean startGame(Lobby lobby);
-
-    public void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver);
-
-    public ClientMoverRMI getClientMoverProxy();
 
 }

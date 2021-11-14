@@ -1,17 +1,15 @@
 package models;
 
-import at.falb.games.alcatraz.api.Player;
-
 public class ClientPlayer {
 
-    private String ip;
-    private int port;
-    private Player player;
+    private final String ip;
+    private final int port;
+    private final String playerName;
 
-    public ClientPlayer(String ip, int port, Player player) {
+    public ClientPlayer(String ip, int port, String playerName) {
         this.ip = ip;
         this.port = port;
-        this.player = player;
+        this.playerName = playerName;
     }
 
     public String getIp() {
@@ -22,8 +20,8 @@ public class ClientPlayer {
         return port;
     }
 
-    public Player getPlayer() {
-        return player;
+    public String getPlayerName() {
+        return playerName;
     }
 
 }
