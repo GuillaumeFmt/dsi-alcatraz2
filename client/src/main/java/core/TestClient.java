@@ -24,7 +24,7 @@ public class TestClient {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter();
+        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876,"Server");
 
         GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 2", 9872);
         gameInitializer.init();

@@ -1,6 +1,8 @@
 package models;
 
-public class ClientPlayer {
+import java.io.Serializable;
+
+public class ClientPlayer implements Serializable {
 
     private final String ip;
     private final int port;

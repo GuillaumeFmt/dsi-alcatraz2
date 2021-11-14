@@ -1,6 +1,7 @@
 package core;
 
 import adapters.AdvancedMessageListenerAdapter;
+import ports.ServerLobbyHandler;
 import security.AlcatrazSecurityPolicy;
 import spread.SpreadConnection;
 import spread.SpreadException;
@@ -28,7 +29,8 @@ public class Server {
             System.setSecurityManager(new SecurityManager());
         }
 
-        Registry registry = LocateRegistry.createRegistry(9876);
+        ServerInitializer serverInitializer = new ServerInitializer(9876,"Server");
+        serverInitializer.init();
 
         System.out.println("Server started, initializing .. ");
         String testData = "Some Test Data";
