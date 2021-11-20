@@ -2,6 +2,8 @@ package core;
 
 import adapters.ServerLobbyHandlerRMI;
 import adapters.ServerLobbyHandlerRMIStub;
+import ports.in.LobbyHandler;
+import ports.in.Registration;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -25,12 +27,12 @@ public class ServerInitializer {
     }
 
     public void init() {
-        resisterServerLobbyHandlerStub();
+        registerServerLobbyHandlerStub(new RegistrationUseCase(), new LobbyHandlerUseCase());
     }
 
-    private void resisterServerLobbyHandlerStub() {
+    private void registerServerLobbyHandlerStub(Registration registration, LobbyHandler lobbyHandler) {
         try {
-            ServerLobbyHandlerRMI serverLobbyHandlerStub = (ServerLobbyHandlerRMI) UnicastRemoteObject.exportObject(new ServerLobbyHandlerRMIStub(), serverPort);
+            ServerLobbyHandlerRMI serverLobbyHandlerStub = (ServerLobbyHandlerRMI) UnicastRemoteObject.exportObject(new ServerLobbyHandlerRMIStub(registration,lobbyHandler), serverPort);
             registry.rebind(serverName, serverLobbyHandlerStub);
         } catch (RemoteException e) {
             e.printStackTrace();

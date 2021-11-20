@@ -12,7 +12,7 @@ public interface ServerLobbyHandler {
 
     List<Lobby> currentLobbies() ;
 
-    Lobby createLobby(String lobbyName, ClientPlayer clientPlayer);
+    UUID createLobby(String lobbyName, ClientPlayer clientPlayer);
 
     List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer);
 

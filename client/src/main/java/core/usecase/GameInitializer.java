@@ -2,7 +2,9 @@ package core.usecase;
 
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
+import core.Client;
 import models.ClientPlayer;
+import models.Lobby;
 import ports.ServerLobbyHandler;
 import ports.in.RemoteMoveReceiver;
 
@@ -10,6 +12,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
+import java.util.UUID;
 
 public class GameInitializer {
 
@@ -32,7 +36,17 @@ public class GameInitializer {
 
     public void init() {
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
-        serverLobbyHandler.register(new ClientPlayer("0.0.0.0", clientPort, clientName));
+        UUID id = serverLobbyHandler.register(new ClientPlayer("0.0.0.0", clientPort, clientName));
+        System.out.println("My Player UUID: " + id.toString());
+    }
+
+    public void createLobby(String lobbyName) {
+        UUID id = serverLobbyHandler.createLobby(lobbyName, new ClientPlayer("0.0.0.0", clientPort, clientName));
+        System.out.println("My Lobby UUID: " + id.toString());
+    }
+
+    public List<Lobby> getCurrentLobbies() {
+        return serverLobbyHandler.currentLobbies();
     }
 
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {

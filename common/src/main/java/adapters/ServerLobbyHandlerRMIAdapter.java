@@ -50,7 +50,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     }
 
     @Override
-    public Lobby createLobby(String lobbyName, ClientPlayer clientPlayer) {
+    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) {
         try {
             return serverLobbyHandlerProxy.createLobby(lobbyName, clientPlayer);
         } catch (RemoteException e) {
