@@ -28,6 +28,7 @@ public class TestClient {
 
         GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 2", 9872);
         gameInitializer.init();
+        gameInitializer.getCurrentLobbies().forEach(lobby -> System.out.println(lobby.getLobbyId().toString() + " " + lobby.getLobbyOwner().getPlayerName()));
 
         // TODO wait for keyboard input
         System.in.read();

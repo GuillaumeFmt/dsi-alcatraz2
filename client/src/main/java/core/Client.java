@@ -6,6 +6,7 @@ import adapters.out.ClientMoverRMIAdapter;
 import core.usecase.RemoteMoveReceiverUseCase;
 import core.usecase.GameInitializer;
 import core.usecase.LocalMoveReceiverUseCase;
+import models.ClientPlayer;
 import models.GameState;
 import ports.ServerLobbyHandler;
 import ports.out.ClientMover;
@@ -28,6 +29,7 @@ public class Client {
 
         GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 1",9871);
         gameInitializer.init();
+        gameInitializer.createLobby("Lobby 1");
 
         // TODO wait for keyboard input
         System.in.read();

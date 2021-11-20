@@ -14,7 +14,7 @@ public interface ServerLobbyHandlerRMI extends Remote {
 
     List<Lobby> currentLobbies() throws RemoteException;
 
-    Lobby createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException;
+    UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException;
 
     List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException;
 
