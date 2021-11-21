@@ -2,9 +2,12 @@ package models;
 
 import at.falb.games.alcatraz.api.Player;
 import at.falb.games.alcatraz.api.Prisoner;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
+@ToString
 public class ClientMove implements Serializable {
     private int seqNr;
     private Player player;

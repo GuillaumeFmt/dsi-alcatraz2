@@ -61,7 +61,13 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
 
     @Override
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
-        return List.of(new ClientPlayer("127.0.0.1", 9871, "Client 1"), new ClientPlayer("127.0.0.1", 9872, "Client 2"));
+        try {
+            return serverLobbyHandlerProxy.joinLobby(lobby, clientPlayer);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+        //return List.of(new ClientPlayer("127.0.0.1", 9871, "Client 1"), new ClientPlayer("127.0.0.1", 9872, "Client 2"));
     }
 
     @Override

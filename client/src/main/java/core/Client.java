@@ -3,7 +3,6 @@ package core;
 import adapters.ServerLobbyHandlerRMIAdapter;
 import adapters.in.AlcatrazGameAdapter;
 import adapters.out.ClientMoverRMIAdapter;
-import core.usecase.RemoteMoveReceiverUseCase;
 import core.usecase.GameInitializer;
 import core.usecase.LocalMoveReceiverUseCase;
 import models.ClientPlayer;
@@ -21,20 +20,17 @@ public class Client {
 
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
-        }
+        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
+        ClientPlayer clientPlayer = new ClientPlayer("0.0.0.0", 9871, "Client 1");
 
-        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876,"Server");
-
-        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 1",9871);
+        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler, clientPlayer);
         gameInitializer.init();
         gameInitializer.createLobby("Lobby 1");
 
         // TODO wait for keyboard input
         System.in.read();
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876,  "Client 2");
+        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2");
         // clientMover is "Client 2" in this case
 
         LocalMoveReceiver localMoveReceiver = new LocalMoveReceiverUseCase(clientMover);
