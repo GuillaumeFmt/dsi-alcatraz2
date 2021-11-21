@@ -2,15 +2,18 @@ package adapters;
 
 import models.ClientPlayer;
 import models.Lobby;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ports.in.LobbyHandler;
 import ports.in.Registration;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerLobbyHandlerRMIStub.class);
 
     private final Registration registration;
     private LobbyHandler lobbyHandler;
@@ -22,7 +25,7 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
 
     @Override
     public UUID register(ClientPlayer clientPlayer) throws RemoteException {
-        System.out.println("This is: " + clientPlayer.getPlayerName());
+        logger.info("This is: {}", clientPlayer);
         return registration.addClientPlayer(clientPlayer);
     }
 

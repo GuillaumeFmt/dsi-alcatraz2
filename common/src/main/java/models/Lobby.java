@@ -1,10 +1,13 @@
 package models;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
+@ToString
 public class Lobby implements Serializable {
 
     private final UUID lobbyId;

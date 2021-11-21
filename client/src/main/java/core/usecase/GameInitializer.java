@@ -2,9 +2,10 @@ package core.usecase;
 
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
-import core.Client;
 import models.ClientPlayer;
 import models.Lobby;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ports.ServerLobbyHandler;
 import ports.in.RemoteMoveReceiver;
 
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class GameInitializer {
+
+    private static final Logger logger = LoggerFactory.getLogger(GameInitializer.class);
 
     private final ServerLobbyHandler serverLobbyHandler;
     private final ClientPlayer myClientPlayer;
@@ -35,12 +38,12 @@ public class GameInitializer {
     public void init() {
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
         UUID id = serverLobbyHandler.register(myClientPlayer);
-        System.out.println("My Player UUID: " + id.toString());
+        logger.info("My Player UUID: {}", id);
     }
 
     public void createLobby(String lobbyName) {
         UUID id = serverLobbyHandler.createLobby(lobbyName, myClientPlayer);
-        System.out.println("My Lobby UUID: " + id.toString());
+        logger.info("My Lobbyy UUID: {}", id);
     }
 
     public List<Lobby> getCurrentLobbies() {
@@ -48,16 +51,23 @@ public class GameInitializer {
     }
 
     public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
-        List<ClientPlayer> currentClientPlayerInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
-        if (!currentClientPlayerInLobby.isEmpty())
-            System.out.println("Lobby joined!!!");
-        currentClientPlayerInLobby.forEach(player -> System.out.println("Player in Lobby: " + player.getPlayerName()));
+        List<ClientPlayer> currentPlayersInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
+        if (!currentPlayersInLobby.isEmpty()) {
+            logger.info("Lobby joined by player {}!", clientPlayer);
+
+        }
+        currentPlayersInLobby.forEach(player ->
+                logger.info("Player in Lobby: {} - {} - {}",
+                        player.getPlayerName(),
+                        player.getIp(),
+                        player.getPort())
+        );
     }
 
     public void leaveLobby(ClientPlayer clientPlayer) {
-        boolean leaved = serverLobbyHandler.leaveLobby(clientPlayer);
-        if (leaved)
-            System.out.println("You leaved your current lobby!");
+        if (Boolean.TRUE.equals(serverLobbyHandler.leaveLobby(clientPlayer))) {
+            logger.info("Player {} left current lobby!", clientPlayer);
+        }
     }
 
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {

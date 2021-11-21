@@ -1,7 +1,10 @@
 package models;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 
+@ToString
 public class ClientPlayer implements Serializable {
 
     private final String ip;
