@@ -18,14 +18,12 @@ import java.util.UUID;
 public class GameInitializer {
 
     private final ServerLobbyHandler serverLobbyHandler;
-    private final String clientName;
-    private final int clientPort;
+    private final ClientPlayer myClientPlayer;
     private Registry registry;
 
-    public GameInitializer(int serverPort, ServerLobbyHandler serverLobbyHandler, String clientName, int clientPort) {
+    public GameInitializer(int serverPort, ServerLobbyHandler serverLobbyHandler, ClientPlayer clientPlayer) {
         this.serverLobbyHandler = serverLobbyHandler;
-        this.clientName = clientName;
-        this.clientPort = clientPort;
+        this.myClientPlayer = clientPlayer;
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
         } catch (RemoteException e) {
@@ -36,12 +34,12 @@ public class GameInitializer {
 
     public void init() {
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
-        UUID id = serverLobbyHandler.register(new ClientPlayer("0.0.0.0", clientPort, clientName));
+        UUID id = serverLobbyHandler.register(myClientPlayer);
         System.out.println("My Player UUID: " + id.toString());
     }
 
     public void createLobby(String lobbyName) {
-        UUID id = serverLobbyHandler.createLobby(lobbyName, new ClientPlayer("0.0.0.0", clientPort, clientName));
+        UUID id = serverLobbyHandler.createLobby(lobbyName, myClientPlayer);
         System.out.println("My Lobby UUID: " + id.toString());
     }
 
@@ -64,8 +62,8 @@ public class GameInitializer {
 
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
         try {
-            ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), clientPort);
-            registry.rebind(clientName, clientMoverRMIStub);
+            ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), myClientPlayer.getPort());
+            registry.rebind(myClientPlayer.getPlayerName(), clientMoverRMIStub);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

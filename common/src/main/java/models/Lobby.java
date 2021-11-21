@@ -40,8 +40,10 @@ public class Lobby implements Serializable {
         }
         if (!added) {
             if (!isStarted) {
-                lobbyParticipants.add(clientPlayer);
-                participantCount++;
+                if (participantCount < 3) {
+                    lobbyParticipants.add(clientPlayer);
+                    participantCount++;
+                }
             }
         }
 

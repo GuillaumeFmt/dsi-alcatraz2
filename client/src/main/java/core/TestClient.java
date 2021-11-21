@@ -29,16 +29,16 @@ public class TestClient {
         }
 
         ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876,"Server");
+        ClientPlayer clientPlayer = new ClientPlayer("0.0.0.0",9872,"Client 2");
 
-        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 2", 9872);
+        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler, clientPlayer);
         gameInitializer.init();
 
         List<Lobby> currentLobbies = gameInitializer.getCurrentLobbies();
         currentLobbies.forEach(lobby -> System.out.println("LobbyID: " + lobby.getLobbyId().toString() + " LobbyName: " + lobby.getLobbyName() + " LobbyParticipants: " + lobby.getLobbyOwner().getPlayerName()));
         if (currentLobbies.size() == 1) {
-            ClientPlayer testPlayer = new ClientPlayer("0.0.0.0", 9872, "Client 2");
-            gameInitializer.joinLobby(currentLobbies.get(0), testPlayer);
-            gameInitializer.leaveLobby(testPlayer);
+            gameInitializer.joinLobby(currentLobbies.get(0), clientPlayer);
+            gameInitializer.leaveLobby(clientPlayer);
         }
 
 

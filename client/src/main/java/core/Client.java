@@ -26,8 +26,9 @@ public class Client {
         }
 
         ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876,"Server");
+        ClientPlayer clientPlayer = new ClientPlayer("0.0.0.0",9871,"Client 1");
 
-        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler,"Client 1",9871);
+        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler, clientPlayer);
         gameInitializer.init();
         gameInitializer.createLobby("Lobby 1");
 
