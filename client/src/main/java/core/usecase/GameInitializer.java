@@ -49,6 +49,19 @@ public class GameInitializer {
         return serverLobbyHandler.currentLobbies();
     }
 
+    public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
+        List<ClientPlayer> currentClientPlayerInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
+        if (!currentClientPlayerInLobby.isEmpty())
+            System.out.println("Lobby joined!!!");
+        currentClientPlayerInLobby.forEach(player -> System.out.println("Player in Lobby: " + player.getPlayerName()));
+    }
+
+    public void leaveLobby(ClientPlayer clientPlayer) {
+        boolean leaved = serverLobbyHandler.leaveLobby(clientPlayer);
+        if (leaved)
+            System.out.println("You leaved your current lobby!");
+    }
+
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
         try {
             ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), clientPort);

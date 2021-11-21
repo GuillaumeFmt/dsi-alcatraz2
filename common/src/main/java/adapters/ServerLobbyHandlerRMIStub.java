@@ -38,12 +38,13 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
 
     @Override
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException {
-        return Collections.emptyList();
+        return lobbyHandler.joinLobby(lobby, clientPlayer);
+        //return Collections.emptyList();
     }
 
     @Override
     public Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
-        return false;
+        return lobbyHandler.leavLobby(clientPlayer);
     }
 
     @Override

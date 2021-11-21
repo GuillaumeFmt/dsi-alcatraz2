@@ -2,6 +2,7 @@ package models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Lobby implements Serializable {
@@ -23,6 +24,28 @@ public class Lobby implements Serializable {
 
     public UUID getLobbyId() {
         return lobbyId;
+    }
+
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
+    public boolean addLobbyParticipant(ClientPlayer clientPlayer) {
+        boolean added = false;
+        for (ClientPlayer lobbyParticipant : lobbyParticipants) {
+            if (Objects.equals(lobbyParticipant.getPlayerName(), clientPlayer.getPlayerName())) {
+                added = true;
+                break;
+            }
+        }
+        if (!added) {
+            if (!isStarted) {
+                lobbyParticipants.add(clientPlayer);
+                participantCount++;
+            }
+        }
+
+        return added;
     }
 
     public void setLobbyOwner(ClientPlayer lobbyOwner) {

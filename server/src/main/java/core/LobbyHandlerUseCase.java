@@ -23,4 +23,33 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     public List<Lobby> getCurrentLobbies() {
         return lobbies;
     }
+
+    @Override
+    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
+        ArrayList<ClientPlayer> ret = null;
+        for (Lobby currentLobby : lobbies) {
+            if (currentLobby.getLobbyId().equals(lobby.getLobbyId())) {
+                currentLobby.addLobbyParticipant(clientPlayer);
+                ret = currentLobby.getLobbyParticipants();
+                System.out.println("Client: " + clientPlayer.getPlayerName() + " joined the lobby: " + lobby.getLobbyId() + " name: " +lobby.getLobbyName());
+            }
+        }
+        return (List<ClientPlayer>) ret;
+    }
+
+    @Override
+    public boolean leavLobby(ClientPlayer clientPlayer) {
+        boolean ret = false;
+        for (Lobby currentLobby: lobbies) {
+            List<ClientPlayer> players = currentLobby.getLobbyParticipants();
+            for (ClientPlayer currentPlayer : players) {
+                if (currentPlayer.getPlayerName().equals(clientPlayer.getPlayerName())) {
+                    currentLobby.getLobbyParticipants().remove(currentPlayer);
+                    ret = true;
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
 }
