@@ -1,18 +1,7 @@
 package core;
 
-import adapters.AdvancedMessageListenerAdapter;
-import ports.ServerLobbyHandler;
 import security.AlcatrazSecurityPolicy;
-import spread.SpreadConnection;
-import spread.SpreadException;
-import spread.SpreadGroup;
-import spread.SpreadMessage;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.security.Policy;
 
 /*
@@ -21,7 +10,7 @@ import java.security.Policy;
 * */
 
 public class Server {
-    public static void main(String[] args) throws RemoteException, UnknownHostException  {
+    public static void main(String[] args) {
 
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
