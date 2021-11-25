@@ -1,5 +1,6 @@
 package view.controller;
 
+import models.ClientPlayer;
 import view.LobbyWindow;
 
 import java.awt.event.ActionEvent;
@@ -11,10 +12,12 @@ public class LeaveLobbyButtonController implements ActionListener
     //TODO:wenn der user auf den leave lobby button klickt, muss ein rmi zum server geschickt werden
 
     private LobbyWindow lobbyWindow;
+    private ClientPlayer clientPlayer;
 
     public LeaveLobbyButtonController(LobbyWindow lobbyWindow)
     {
         this.lobbyWindow = lobbyWindow;
+        clientPlayer = lobbyWindow.getClientPlayer();
     }
     @Override
     public void actionPerformed(ActionEvent e)

@@ -1,5 +1,6 @@
 package view.controller;
 
+import models.ClientPlayer;
 import view.LobbyWindow;
 import view.WelcomeWindow;
 
@@ -13,6 +14,8 @@ public class SaveButtonController implements ActionListener
 
 
     private WelcomeWindow welcomeWindow;
+    private String userName;
+    private ClientPlayer clientPlayer;
 
     public SaveButtonController(WelcomeWindow welcomeWindow)
     {
@@ -21,7 +24,21 @@ public class SaveButtonController implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        userName = welcomeWindow.getPlayerName().getText();
+        //System.out.println("getplayername: "+userName);
+        clientPlayer = new ClientPlayer("",533,userName);
+        //System.out.println("getplayer name client "+clientPlayer.getPlayerName());
+        LobbyWindow lobby = new LobbyWindow(clientPlayer);
+        lobby.setName(userName);
+        lobby.getTextPane().setText("Hello "+userName);
+        //TODO: set ip and port with proper values
+
         welcomeWindow.setVisible(false);
-        LobbyWindow lobby = new LobbyWindow();
+
+
+
+
+
+
     }
 }

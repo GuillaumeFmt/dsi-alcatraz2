@@ -29,6 +29,46 @@ public class WelcomeWindow extends JFrame
     public void addActionListeners()
     {
         saveButton.addActionListener(new SaveButtonController(this));
-        exitButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {System.exit(0);}});}
+        exitButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {System.exit(0);}});
+    }
 
+    public JLabel getNameText() {
+        return nameText;
+    }
+
+    public void setNameText(JLabel nameText) {
+        this.nameText = nameText;
+    }
+
+    public JTextField getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(JTextField playerName) {
+        this.playerName = playerName;
+    }
+
+    public JButton getSaveButton() {
+        return saveButton;
+    }
+
+    public void setSaveButton(JButton saveButton) {
+        this.saveButton = saveButton;
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
+    }
+
+    public void setExitButton(JButton exitButton) {
+        this.exitButton = exitButton;
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
+    }
+
+    public void setMainPanel(JPanel mainPanel) {
+        this.mainPanel = mainPanel;
+    }
 }

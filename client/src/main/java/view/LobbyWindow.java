@@ -1,10 +1,8 @@
 package view;
 
+import models.ClientPlayer;
 import models.Lobby;
-import view.controller.CreateLobbyButtonController;
-import view.controller.JoinLobbyButtonController;
-import view.controller.LeaveLobbyButtonController;
-import view.controller.StartGameButtonController;
+import view.controller.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +21,8 @@ public class LobbyWindow extends JFrame{
     private JScrollPane scrollPane;
     private JTextPane textPane;
 
+    private ClientPlayer clientPlayer;
+
     private DefaultTableModel tableModel;
 
     private String lobbyIDColumn =   "Lobby ID";
@@ -32,8 +32,11 @@ public class LobbyWindow extends JFrame{
     private String amountParticipantsColumn = "AmountParticipants";
     private String isStartedColumn = "isStarted";
 
+    private AddRowController addRowController;
 
-    public LobbyWindow()
+    public static int lobbyIDCounter = 0;
+
+    public LobbyWindow(ClientPlayer clientPLayer)
     {
         super("AlcatrazLobby");
         setSize(500,500);
@@ -41,7 +44,9 @@ public class LobbyWindow extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createTable();
         add(mainPanel);
+        this.clientPlayer = clientPLayer;
         addListeners();
+        this.addRowController = new AddRowController(this);
         setVisible(true);
     }
     public void createTable()
@@ -53,7 +58,7 @@ public class LobbyWindow extends JFrame{
         lobbyTable.setModel(tableModel);
 
         //example to add into table
-        tableModel.addRow(new Object[]{"test","test","test","test","test",Boolean.TRUE,});
+     //   tableModel.addRow(new Object[]{"test","test","test","test","test",Boolean.TRUE,});
 
 
     }
@@ -207,6 +212,14 @@ public class LobbyWindow extends JFrame{
 
     public void setAmountParticipantsColumn(String amountParticipantsColumn) {
         this.amountParticipantsColumn = amountParticipantsColumn;
+    }
+
+    public ClientPlayer getClientPlayer() {
+        return clientPlayer;
+    }
+
+    public AddRowController getAddRowController() {
+        return addRowController;
     }
 
     public String getIsStartedColumn() {

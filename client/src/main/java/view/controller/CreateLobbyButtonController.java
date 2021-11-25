@@ -1,25 +1,35 @@
 package view.controller;
 
+import models.ClientPlayer;
 import view.LobbyWindow;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CreateLobbyButtonController implements ActionListener
 {
 
-    //TODO: wenn man eine neue lobby erstellt, soll eine neue row eingestellt werden und die muss auch am server aktualisiert werden
-    //TODO: bei erstellung einer neuen lobby soll ein rmi an den server geschickt werden, um die tabelle zu aktualisieren
+    //done wenn man eine neue lobby erstellt, soll eine neue row eingestellt werden
+
 
     private LobbyWindow lobbyWindow;
+    private ClientPlayer clientPlayer;
 
     public CreateLobbyButtonController(LobbyWindow lobbyWindow)
     {
         this.lobbyWindow = lobbyWindow;
+        clientPlayer = lobbyWindow.getClientPlayer();
+
     }
     @Override
     public void actionPerformed(ActionEvent e)
     {
         lobbyWindow.getTextPane().setText("You clicked onto the create Button");
+        String lobbyName = JOptionPane.showInputDialog(lobbyWindow,"Enter your lobby name: ","LobbyName",JOptionPane.INFORMATION_MESSAGE);
+
+        lobbyWindow.getAddRowController().addRow(lobbyName,clientPlayer.getPlayerName());
+
+
     }
 }
