@@ -28,6 +28,8 @@ public class Client {
         gameInitializer.createLobby("Lobby 1");
 
         // TODO wait for keyboard input
+
+        //attach the gui here
         System.in.read();
 
         ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2");
