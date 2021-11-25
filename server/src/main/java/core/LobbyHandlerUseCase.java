@@ -1,13 +1,13 @@
 package core;
 
+import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.in.LobbyHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+@Slf4j
 public class LobbyHandlerUseCase implements LobbyHandler {
 
     private final ArrayList<Lobby> lobbies = new ArrayList<>();
@@ -26,19 +26,25 @@ public class LobbyHandlerUseCase implements LobbyHandler {
 
     @Override
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
-        ArrayList<ClientPlayer> ret = null;
-        for (Lobby currentLobby : lobbies) {
-            if (currentLobby.getLobbyId().equals(lobby.getLobbyId())) {
-                currentLobby.addLobbyParticipant(clientPlayer);
-                ret = currentLobby.getLobbyParticipants();
-                System.out.println("Client: " + clientPlayer.getPlayerName() + " joined the lobby: " + lobby.getLobbyId() + " name: " +lobby.getLobbyName());
+        if (lobbies.stream().filter(streamLobby -> streamLobby.getLobbyId().equals(lobby.getLobbyId())).count() == 1) {
+            try {
+                Lobby lobbyToJoin = lobbies.stream()
+                        .filter(streamLobby -> streamLobby.getLobbyId().equals(lobby.getLobbyId()))
+                        .findFirst().orElseThrow(Exception::new);
+
+                lobbyToJoin.addLobbyParticipant(clientPlayer);
+                log.info("ClientPlayer: {} joined the Lobby: {}", clientPlayer, lobby);
+
+                return lobbyToJoin.getLobbyParticipants();
+            } catch (Exception e) {
+                log.error("Could not add player to lobby, Lobby {} not found! - Exception: {}", lobby, e.getMessage());
             }
         }
-        return (List<ClientPlayer>) ret;
+        return Collections.emptyList();
     }
 
     @Override
-    public boolean leavLobby(ClientPlayer clientPlayer) {
+    public boolean leaveLobby(ClientPlayer clientPlayer) {
         boolean ret = false;
         for (Lobby currentLobby: lobbies) {
             List<ClientPlayer> players = currentLobby.getLobbyParticipants();
