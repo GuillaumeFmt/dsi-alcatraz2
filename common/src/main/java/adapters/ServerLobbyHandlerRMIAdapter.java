@@ -83,7 +83,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     @Override
     public Boolean startGame(Lobby lobby) {
         try {
-            return  serverLobbyHandlerProxy.startGame(lobby);
+            return serverLobbyHandlerProxy.startGame(lobby);
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;
