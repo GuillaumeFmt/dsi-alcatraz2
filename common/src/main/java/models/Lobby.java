@@ -13,7 +13,7 @@ public class Lobby implements Serializable {
     private final UUID lobbyId;
     private final String lobbyName;
     private ClientPlayer lobbyOwner;
-    private final ArrayList<ClientPlayer> lobbyParticipants = new ArrayList<>();
+    private ArrayList<ClientPlayer> lobbyParticipants = new ArrayList<>();
     private int participantCount = 0;
     private boolean isStarted;
 
@@ -47,8 +47,12 @@ public class Lobby implements Serializable {
         return lobbyOwner;
     }
 
-    public List<ClientPlayer> getLobbyParticipants() {
+    public ArrayList<ClientPlayer> getLobbyParticipants() {
         return lobbyParticipants;
+    }
+
+    public void setLobbyParticipants(ArrayList<ClientPlayer> lobbyParticipants) {
+        this.lobbyParticipants = lobbyParticipants;
     }
 
     public int getParticipantCount() {

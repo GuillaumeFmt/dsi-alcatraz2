@@ -2,6 +2,8 @@ package core;
 
 import adapters.ServerLobbyHandlerRMI;
 import adapters.ServerLobbyHandlerRMIStub;
+import usecase.LobbyHandlerUseCase;
+import usecase.RegistrationUseCase;
 import ports.in.LobbyHandler;
 import ports.in.Registration;
 
@@ -28,6 +30,7 @@ public class ServerInitializer {
 
     public void init() {
         registerServerLobbyHandlerStub(new RegistrationUseCase(), new LobbyHandlerUseCase());
+        initializeSpreadCommunication();
     }
 
     private void registerServerLobbyHandlerStub(Registration registration, LobbyHandler lobbyHandler) {
@@ -37,5 +40,9 @@ public class ServerInitializer {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initializeSpreadCommunication(){
+        SpreadConnectionManager.instantiateSpreadConnectionManager();
     }
 }

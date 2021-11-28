@@ -1,48 +1,62 @@
 package core;
 
 import adapters.AdvancedMessageListenerAdapter;
+import model.SpreadGroupState;
 import spread.SpreadConnection;
 import spread.SpreadException;
 import spread.SpreadGroup;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 public class SpreadConnectionManager {
+
     private static SpreadConnectionManager spreadConnectionManager;
     private SpreadConnection spreadConnection;
+    private SpreadGroup group;
+    private String groupName;
 
-    public SpreadConnectionManager() {
+    private SpreadConnectionManager() {
+        this.groupName = "AlcatrazGroup";
         this.spreadConnection = new SpreadConnection();
+        this.group = new SpreadGroup();
+        init();
+        registerListeners();
+    }
 
-        try {
-            spreadConnection.connect(null, 0, "connectionName", false, true);
-        } catch (SpreadException e) {
-            System.err.println(String.format("Exception '%s' received while trying to connect to Spread Daemon on localhost:4803", e.getMessage()));
-            throw new RuntimeException();
-        }
-
-        System.out.println(String.format("Connection established with spread daemon on default localhost:4803"));
-        System.out.println(String.format("My name is %s", spreadConnection.getPrivateGroup()));
-
-        String groupName = "AlcatrazGroup";
-        SpreadGroup group = new SpreadGroup();
-        System.out.println(String.format("Trying to join group %s", groupName));
-
-        try {
-            group.join(spreadConnection, groupName);
-        } catch (SpreadException e) {
-            System.err.println(String.format("Exception '%' received while trying to join group %s", e.getMessage(), groupName));
-            e.printStackTrace();
-        }
+    private void registerListeners() {
         spreadConnection.add(new AdvancedMessageListenerAdapter());
     }
 
+    public void init() {
+        // if inetAddress is null and port 0, client will try to connect to localhost 4803 which is what we want
+        try {
+            this.spreadConnection.connect(null, 0, "connectionName", false, true);
+        } catch (SpreadException e) {
+            System.err.printf("Exception '%s' received while trying to connect to Spread Daemon on localhost:4803%n", e.getMessage());
+            throw new RuntimeException();
+        }
+        SpreadGroupState.myGroup = spreadConnection.getPrivateGroup();
+        System.out.println("Connection established with spread daemon on default localhost:4803");
+        System.out.printf("My name is %s%n", spreadConnection.getPrivateGroup());
+        System.out.printf("Trying to join group %s%n", this.groupName);
+        try {
+            this.group.join(this.spreadConnection, this.groupName);
+        } catch (SpreadException e) {
+            System.err.printf("Exception '%s' received while trying to join group %s%n", e.getMessage(), this.groupName);
+            e.printStackTrace();
+        }
+    }
+
     public static SpreadConnectionManager getInstance() {
-        if(spreadConnectionManager == null){
+        return spreadConnectionManager;
+    }
+
+    public static void instantiateSpreadConnectionManager(){
+        if(spreadConnectionManager == null) {
             spreadConnectionManager = new SpreadConnectionManager();
         }
-        return spreadConnectionManager;
+    }
+
+    public SpreadGroup getSpreadGroup() {
+        return this.group;
     }
 
     public SpreadConnection getSpreadConnection() {

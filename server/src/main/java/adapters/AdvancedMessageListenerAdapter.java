@@ -1,47 +1,106 @@
 package adapters;
 
-import spread.AdvancedMessageListener;
-import spread.MembershipInfo;
-import spread.SpreadGroup;
-import spread.SpreadMessage;
+import core.*;
+import model.LocalServerState;
+import model.MessageType;
+import model.SpreadGroupState;
+import model.SpreadMessageData;
+import spread.*;
 
-import java.lang.reflect.Member;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AdvancedMessageListenerAdapter implements AdvancedMessageListener {
 
     @Override
     public void regularMessageReceived(SpreadMessage spreadMessage) {
-        System.out.println("Regular message: " + new String(spreadMessage.getData()));
+        System.out.print("Received regular message ");
+        try {
+            SpreadMessageData spreadMessageData = (SpreadMessageData) MessageHandler.deserialize(spreadMessage.getData());
+
+            switch (spreadMessageData.getMessageType()) {
+                case SEND_PRIMARY:
+                    System.out.printf("with MessageType %s from %s\n", MessageType.SEND_PRIMARY, spreadMessage.getSender());
+                    PrimaryServerHandler.getInstance().handleSendPrimaryMessage(spreadMessage.getSender());
+                    break;
+                case PRIMARY:
+                    System.out.printf("with MessageType %s containing %s\n", MessageType.PRIMARY,  spreadMessageData.getPrimary());
+                    PrimaryServerHandler.getInstance().setPrimary(spreadMessageData.getPrimary());
+                    break;
+                case UPDATE_SERVER_STATE:
+                    System.out.printf("with MessageType %s containing %s\n", MessageType.UPDATE_SERVER_STATE,  spreadMessageData.getLocalServerState());
+                    if (!PrimaryServerHandler.getInstance().amIPrimary()) {
+                        System.out.println("Setting local Server State...");
+                        LocalServerState.setLocalServerState(spreadMessageData.getLocalServerState());
+                    }
+                    break;
+                default:
+                    System.out.printf("with other payload %s\n", spreadMessageData);
+                    break;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void membershipMessageReceived(SpreadMessage spreadMessage) {
+        System.out.println("Received membership message");
         MembershipInfo membershipInfo = spreadMessage.getMembershipInfo();
+        printMembershipInfoDetails(membershipInfo);
+    }
 
-        System.out.print("Received Spread Membership Message due to ");
+    private void printMembershipInfoDetails(MembershipInfo membershipInfo) {
         if (membershipInfo.isCausedByJoin()) {
-            System.out.println("the JOIN of " + membershipInfo.getJoined());
+            System.out.printf("JOIN: %s\n", membershipInfo.getJoined());
         } else if (membershipInfo.isCausedByDisconnect()) {
-            System.out.println("the DISCONNECT of " + membershipInfo.getDisconnected());
+            System.out.printf("DISCONNECT: %s\n",  membershipInfo.getDisconnected());
         } else if (membershipInfo.isCausedByLeave()) {
-            System.out.println("LEAVE of " + membershipInfo.getLeft());
+            System.out.printf("LEAVE: %s\n", membershipInfo.getLeft());
         } else if (membershipInfo.isCausedByNetwork()) {
-            System.out.println("a NETWORK change.");
+            System.out.println("NETWORK changed.\n");
         } else if (membershipInfo.isTransition()) {
-            System.out.println("TRANSITIONAL membership for group " + membershipInfo.getGroup());
+            System.out.printf("TRANSITIONAL: %s\n", membershipInfo.getGroup());
         } else if (membershipInfo.isSelfLeave()) {
-            System.out.println("SELF-LEAVE message for group " + membershipInfo.getGroup());
+            System.out.printf("SELF-LEAVE: %s\n", membershipInfo.getGroup());
         }
 
+
         if(membershipInfo.isRegularMembership()){
-            System.out.println("Group: " + membershipInfo.getGroup().toString());
-            System.out.println("GroupID: " + membershipInfo.getGroupID().toString());
-            System.out.println("Number of members in group: " + Arrays.stream(membershipInfo.getMembers()).count());
-            System.out.println("GroupMembers: ");
-            Arrays.stream(membershipInfo.getMembers()).forEach(spreadGroup -> System.out.println("  " + spreadGroup.toString()));
+            GroupID oldGroupID = SpreadGroupState.groupID;
+            String currentPrimaryServerName = PrimaryServerHandler.getInstance().actualPrimaryServerName;
+
+            SpreadGroupState.groupID = membershipInfo.getGroupID();
+            SpreadGroupState.groupName = membershipInfo.getGroup();
+            SpreadGroupState.groupMembers = membershipInfo.getMembers();
+            SpreadGroupState.groupSize = Arrays.stream(membershipInfo.getMembers()).count();
+            SpreadGroupState.print();
+
+            if ((oldGroupID != null) && (currentPrimaryServerName != null)) {
+            //if (oldGroupID != null) {
+                if (!oldGroupID.equals(membershipInfo.getGroupID())) {
+                    System.out.println("Group-View has changed!");
+                    Boolean primaryStillInGroup = false;
+
+                    for (SpreadGroup groupMember : membershipInfo.getMembers()) {
+                        System.out.println("Checking member: " + groupMember);
+                        if (currentPrimaryServerName.equals(groupMember.toString())) {
+                            primaryStillInGroup = true;
+                            System.out.println("Primary still in group, no election needed");
+                            break;
+                        }
+                    }
+                    if (!primaryStillInGroup) { // Primary election process
+                        System.out.println("Primary left group -> primary elected needed...");
+                        SpreadGroup newPrimary = membershipInfo.getMembers()[0];
+                        System.out.println("New Primary: " + newPrimary.toString());
+                        PrimaryServerHandler.getInstance().setPrimary(newPrimary.toString());
+                    }
+                }
+            } else {
+                // only execute once at server startup
+                PrimaryServerHandler.getInstance().setPrimary(membershipInfo.getMembers());
+            }
         }
     }
 }

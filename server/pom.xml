@@ -30,6 +30,12 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/../spread-4.0.0-api.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

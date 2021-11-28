@@ -8,9 +8,9 @@ in order to talk to other clients during the game.
 ## Spread
 The spread daemon runs on multiple servers in the cloud.
 
-dsiars01.westeurope.cloudapp.azure.com
-dsiars02.westeurope.cloudapp.azure.com
-dsiars03.westeurope.cloudapp.azure.com
+dsiars01.westeurope.cloudapp.azure.com  
+dsiars02.westeurope.cloudapp.azure.com  
+dsiars03.westeurope.cloudapp.azure.com  
 
 After a pull_request or push into remote branches spread-features,
 main a build is triggered and the jars are pushed onto those servers.
