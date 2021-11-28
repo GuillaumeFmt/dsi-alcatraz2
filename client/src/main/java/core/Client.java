@@ -20,17 +20,19 @@ import java.io.IOException;
 import java.security.Policy;
 
 public class Client {
+    private static final String[] servers = {"192.168.178.52:9876", "dsiars01.westeurope.cloudapp.azure.com:9876", "dsiars02.westeurope.cloudapp.azure.com:9876", "dsiars03.westeurope.cloudapp.azure.com:9876"};
+
     public static void main(String[] args) throws IOException {
 
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
         ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
 
-        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler);
-        //gameInitializer.createLobby("Lobby 1");
+        GameInitializer gameInitializer = new GameInitializer(servers, serverLobbyHandler);
 
         AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(gameInitializer);
         AlcatrazGUIReceiverAdapter guiReceiverAdapter = new AlcatrazGUIReceiverAdapter(alcatrazGUIReceiver);
+        System.in.read(); // dirty workaround for timing issue
         WelcomeWindow welcomeWindow = new WelcomeWindow(guiReceiverAdapter);
 
         // TODO wait for keyboard input

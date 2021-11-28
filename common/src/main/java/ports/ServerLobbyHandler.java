@@ -1,5 +1,6 @@
 package ports;
 
+import exceptions.ServerNotPrimaryException;
 import models.ClientPlayer;
 import models.Lobby;
 
@@ -8,16 +9,16 @@ import java.util.UUID;
 
 public interface ServerLobbyHandler {
 
-    UUID register (ClientPlayer clientPlayer);
+    UUID register (ClientPlayer clientPlayer) throws ServerNotPrimaryException;
 
-    List<Lobby> currentLobbies() ;
+    List<Lobby> currentLobbies() throws ServerNotPrimaryException;
 
-    UUID createLobby(String lobbyName, ClientPlayer clientPlayer);
+    UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws ServerNotPrimaryException;
 
-    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer);
+    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ServerNotPrimaryException;
 
-    Boolean leaveLobby(ClientPlayer clientPlayer);
+    Boolean leaveLobby(ClientPlayer clientPlayer) throws ServerNotPrimaryException;
 
-    Boolean startGame(Lobby lobby);
+    Boolean startGame(Lobby lobby) throws ServerNotPrimaryException;
 
 }

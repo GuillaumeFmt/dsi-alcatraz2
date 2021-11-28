@@ -17,6 +17,17 @@ public class WelcomeWindow extends JFrame
 
     private AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter;
 
+    public WelcomeWindow() {
+        this.alcatrazGUIReceiverAdapter = alcatrazGUIReceiverAdapter;
+        setTitle("Shawshank Redemption");
+        setSize(500,500);
+        setLocationRelativeTo(this);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        add(mainPanel);
+        addActionListeners();
+        setVisible(true);
+    }
+
 
     public WelcomeWindow(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter) {
         this.alcatrazGUIReceiverAdapter = alcatrazGUIReceiverAdapter;

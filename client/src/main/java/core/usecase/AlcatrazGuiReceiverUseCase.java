@@ -1,15 +1,11 @@
 package core.usecase;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +18,7 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
     @Override
     public void createUser(String userName, int port) {
         log.info("Username: {}, Port: {}", userName, port);
-        gameInitializer.init(userName, port);// register user on server
+        gameInitializer.registerUser(userName, port);// register user on server
     }
 
     @Override

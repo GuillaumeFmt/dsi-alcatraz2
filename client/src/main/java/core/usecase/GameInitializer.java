@@ -2,6 +2,7 @@ package core.usecase;
 
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
+import exceptions.ServerNotPrimaryException;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
@@ -12,8 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class GameInitializer {
@@ -21,50 +21,97 @@ public class GameInitializer {
     private final ServerLobbyHandler serverLobbyHandler;
     private ClientPlayer myClientPlayer;
     private Registry registry;
+    private String[] servers;
 
-    public GameInitializer(int serverPort, ServerLobbyHandler serverLobbyHandler) {
+    public GameInitializer(String[] servers, ServerLobbyHandler serverLobbyHandler) {
+        this.servers = servers;
         this.serverLobbyHandler = serverLobbyHandler;
-        try {
-            this.registry = LocateRegistry.getRegistry(serverPort);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
+        rebindServer();
     }
 
-    public void init(String playerName, int port) {
+    public void registerUser(String playerName, int port) {
         myClientPlayer = new ClientPlayer("  ",port,playerName);
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
-        UUID id = serverLobbyHandler.register(myClientPlayer);
-        log.info("My Player UUID: {}", id);
+        UUID id = null;
+
+        while(true) {
+            try {
+                id = serverLobbyHandler.register(myClientPlayer);
+                log.info("My Player UUID: {}", id);
+                break;
+            } catch (ServerNotPrimaryException e) {
+                log.info("Retrying another server");
+                rebindServer();
+                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+                continue;
+            }
+        }
     }
 
     public void createLobby(String lobbyName) {
-        UUID id = serverLobbyHandler.createLobby(lobbyName, myClientPlayer);
-        log.info("My Lobbyy UUID: {}", id);
+        UUID id = null;
+
+        while(true) {
+            try {
+                id = serverLobbyHandler.createLobby(lobbyName, myClientPlayer);
+                log.info("My Lobbyy UUID: {}", id);
+                break;
+            } catch (ServerNotPrimaryException e) {
+                log.info("Retrying another server");
+                rebindServer();
+                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+            }
+        }
+
     }
 
     public List<Lobby> getCurrentLobbies() {
-        return serverLobbyHandler.currentLobbies();
+        while(true) {
+            try {
+                return serverLobbyHandler.currentLobbies();
+            } catch (ServerNotPrimaryException e) {
+                log.info("Retrying another server");
+                rebindServer();
+                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+            }
+            return Collections.emptyList();
+        }
     }
 
     public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
-        List<ClientPlayer> currentPlayersInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
-        if (!currentPlayersInLobby.isEmpty()) {
-            log.info("Lobby joined by player {}!", clientPlayer);
-
+        List<ClientPlayer> currentPlayersInLobby = null;
+        while (true){
+            try {
+                currentPlayersInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
+                if (!currentPlayersInLobby.isEmpty()) {
+                    log.info("Lobby joined by player {}!", clientPlayer);
+                    currentPlayersInLobby.forEach(player ->
+                            log.info("Player in Lobby: {} - {} - {}",
+                                    player.getPlayerName(),
+                                    player.getIp(),
+                                    player.getPort())
+                    );
+                }
+                break;
+            } catch (ServerNotPrimaryException e) {
+                log.info("Retrying another server");
+                rebindServer();
+                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+            }
         }
-        currentPlayersInLobby.forEach(player ->
-                log.info("Player in Lobby: {} - {} - {}",
-                        player.getPlayerName(),
-                        player.getIp(),
-                        player.getPort())
-        );
     }
 
     public void leaveLobby(ClientPlayer clientPlayer) {
-        if (Boolean.TRUE.equals(serverLobbyHandler.leaveLobby(clientPlayer))) {
-            log.info("Player {} left current lobby!", clientPlayer);
+        while(true){
+            try {
+                if (Boolean.TRUE.equals(serverLobbyHandler.leaveLobby(clientPlayer))) {
+                    log.info("Player {} left current lobby!", clientPlayer);
+                }
+            } catch (ServerNotPrimaryException e) {
+                log.info("Retrying another server");
+                rebindServer();
+                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+            }
         }
     }
 
@@ -75,5 +122,27 @@ public class GameInitializer {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private void rebindServer(){
+        Iterator<String> iterator = Arrays.asList(servers).iterator();
+        String server = iterator.next();
+        int port = Integer.parseInt(server.split(":")[1]);
+        server = server.split(":")[0];
+
+        while(getRegistry(server, port)){
+            System.out.println("Trying to bind to new server" + server);
+            server = iterator.next();
+        }
+    }
+
+    private boolean getRegistry(String hostname, int port) {
+        try {
+            this.registry = LocateRegistry.getRegistry(hostname, port);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return true;
+        }
+        return false;
     }
 }
