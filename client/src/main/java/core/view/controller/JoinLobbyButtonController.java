@@ -1,8 +1,7 @@
-package view.controller;
+package core.view.controller;
 
 import models.ClientPlayer;
-import view.LobbyWindow;
-import view.WelcomeWindow;
+import core.view.LobbyWindow;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

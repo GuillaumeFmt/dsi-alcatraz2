@@ -1,8 +1,7 @@
-package view;
+package core.view;
 
 import models.ClientPlayer;
-import models.Lobby;
-import view.controller.*;
+import core.view.controller.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

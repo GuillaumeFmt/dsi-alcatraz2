@@ -1,8 +1,8 @@
-package view.controller;
+package core.view.controller;
 
-import view.LobbyWindow;
+import core.view.LobbyWindow;
 
-import static view.LobbyWindow.lobbyIDCounter;
+import static core.view.LobbyWindow.lobbyIDCounter;
 
 //TODO: bei erstellung einer neuen lobby soll ein rmi an den server geschickt werden, um die tabelle zu aktualisieren
 public class AddRowController

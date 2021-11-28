@@ -1,8 +1,9 @@
-package view.controller;
+package core.view.controller;
 
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import models.ClientPlayer;
-import view.LobbyWindow;
-import view.WelcomeWindow;
+import core.view.LobbyWindow;
+import core.view.WelcomeWindow;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,18 +17,23 @@ public class SaveButtonController implements ActionListener
     private WelcomeWindow welcomeWindow;
     private String userName;
     private ClientPlayer clientPlayer;
+    private AlcatrazGUIReceiverAdapter guiReceiverAdapter;
 
-    public SaveButtonController(WelcomeWindow welcomeWindow)
+    public SaveButtonController(WelcomeWindow welcomeWindow, AlcatrazGUIReceiverAdapter guiReceiver)
     {
         this.welcomeWindow = welcomeWindow;
+        this.guiReceiverAdapter = guiReceiver;
     }
+
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
         userName = welcomeWindow.getPlayerName().getText();
         //System.out.println("getplayername: "+userName);
         clientPlayer = new ClientPlayer("",533,userName);
-        //System.out.println("getplayer name client "+clientPlayer.getPlayerName());
+//        guiReceiverAdapter.createUser(userName, 9871);
+        System.out.println("getplayer name client "+clientPlayer.getPlayerName());
         LobbyWindow lobby = new LobbyWindow(clientPlayer);
         lobby.setName(userName);
         lobby.getTextPane().setText("Hello "+userName);

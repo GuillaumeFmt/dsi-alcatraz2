@@ -1,6 +1,7 @@
-package view;
+package core.view;
 
-import view.controller.SaveButtonController;
+import adapters.in.AlcatrazGUIReceiverAdapter;
+import core.view.controller.SaveButtonController;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,9 +15,11 @@ public class WelcomeWindow extends JFrame
     private JButton exitButton;
     private JPanel mainPanel;
 
+    private AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter;
 
-    public WelcomeWindow()
-    {
+
+    public WelcomeWindow(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter) {
+        this.alcatrazGUIReceiverAdapter = alcatrazGUIReceiverAdapter;
         setTitle("Shawshank Redemption");
         setSize(500,500);
         setLocationRelativeTo(this);
@@ -28,7 +31,7 @@ public class WelcomeWindow extends JFrame
 
     public void addActionListeners()
     {
-        saveButton.addActionListener(new SaveButtonController(this));
+        saveButton.addActionListener(new SaveButtonController(this, alcatrazGUIReceiverAdapter));
         exitButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {System.exit(0);}});
     }
 
