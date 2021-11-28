@@ -8,5 +8,5 @@ public interface LocalMoveReceiver {
 
     public void updateLocalMove(ClientMove clientMove);
 
-    public void moveDoneMessage(Player player, Prisoner prisoner,  int rowOrCol, int row, int col);
+    public void localMoveReceived(Player player, Prisoner prisoner, int rowOrCol, int row, int col);
 }

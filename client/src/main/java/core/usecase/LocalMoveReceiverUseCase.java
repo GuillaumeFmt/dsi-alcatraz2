@@ -2,6 +2,7 @@ package core.usecase;
 
 import at.falb.games.alcatraz.api.Player;
 import at.falb.games.alcatraz.api.Prisoner;
+import exceptions.ClientNotReachableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientMove;
@@ -20,13 +21,18 @@ public class LocalMoveReceiverUseCase implements LocalMoveReceiver {
     }
 
     @Override
-    public void moveDoneMessage(Player player, Prisoner prisoner, int rowOrCol, int row, int col) {
+    public void localMoveReceived(Player player, Prisoner prisoner, int rowOrCol, int row, int col) {
         log.info("Move done! - Player: {} - Prisoner: {}, row/col: {}, row: {}, col: {}",
                 player,
                 prisoner,
                 rowOrCol,
                 row,
                 col);
-        clientMover.sendMove(new ClientMove(0, player, prisoner, rowOrCol, row, col));
+        try {
+            clientMover.sendMove(new ClientMove(0, player, prisoner, rowOrCol, row, col));
+        } catch (ClientNotReachableException e) {
+            log.error("The client was not reacting: {0}", e);
+            System.exit(0);
+        }
     }
 }
