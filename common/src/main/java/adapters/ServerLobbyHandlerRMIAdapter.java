@@ -51,6 +51,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
 
     @Override
     public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) {
+        // TODO: implement logic to send the request again if the current connected server is not the primary
         try {
             return serverLobbyHandlerProxy.createLobby(lobbyName, clientPlayer);
         } catch (RemoteException e) {
