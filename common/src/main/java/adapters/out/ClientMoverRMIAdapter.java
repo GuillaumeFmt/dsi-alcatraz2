@@ -1,8 +1,10 @@
 package adapters.out;
 
+import exceptions.ClientNotReachableException;
 import models.ClientMove;
 import models.ClientPlayer;
 import ports.out.ClientMover;
+import utils.RetryOnExceptionHandler;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -14,8 +16,10 @@ public class ClientMoverRMIAdapter implements ClientMover {
     private Registry registry;
     private final String remoteName;
     private ClientMoverRMI clientMoverProxy;
+    private final RetryOnExceptionHandler retryOnExceptionHandler;
 
     public ClientMoverRMIAdapter(int serverPort, String remoteName) {
+        retryOnExceptionHandler = new RetryOnExceptionHandler(3, 10);
         this.remoteName = remoteName;
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
@@ -27,12 +31,13 @@ public class ClientMoverRMIAdapter implements ClientMover {
     }
 
     @Override
-    public boolean sendMove(ClientMove clientMove) {
-        try {
-            return clientMoverProxy.sendMove(clientMove);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return false;
+    public boolean sendMove(ClientMove clientMove) throws ClientNotReachableException {
+        while(true) {
+            try {
+                return clientMoverProxy.sendMove(clientMove);
+            } catch (RemoteException e) {
+                retryOnExceptionHandler.exceptionOccurred();
+            }
         }
     }
 

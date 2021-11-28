@@ -89,7 +89,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     @Override
     public Boolean startGame(Lobby lobby) throws ServerNotPrimaryException {
         try {
-            return  serverLobbyHandlerProxy.startGame(lobby);
+            return serverLobbyHandlerProxy.startGame(lobby);
         } catch (RemoteException e) {
             log.info("Got remote exception while trying to start game {}", e.getMessage());
             throw new ServerNotPrimaryException();

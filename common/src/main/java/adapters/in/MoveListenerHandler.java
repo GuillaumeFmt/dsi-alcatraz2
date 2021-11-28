@@ -25,7 +25,7 @@ public class MoveListenerHandler implements MoveListener {
 
     @Override
     public void moveDone(Player player, Prisoner prisoner, int rowOrCol, int row, int col) {
-        localMoveReceiver.moveDoneMessage(player, prisoner, rowOrCol, row, col);
+        localMoveReceiver.localMoveReceived(player, prisoner, rowOrCol, row, col);
         localMoveReceiver.updateLocalMove(new ClientMove(0, player, prisoner, rowOrCol, row, col));
     }
 
