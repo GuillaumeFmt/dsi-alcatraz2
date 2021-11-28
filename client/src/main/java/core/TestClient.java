@@ -5,11 +5,10 @@ import adapters.in.AlcatrazGameAdapter;
 import adapters.out.ClientMoverRMIAdapter;
 import core.usecase.GameInitializer;
 import core.usecase.LocalMoveReceiverUseCase;
+import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.GameState;
 import models.Lobby;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ports.ServerLobbyHandler;
 import ports.in.LocalMoveReceiver;
 import ports.out.ClientMover;
@@ -19,9 +18,8 @@ import java.io.IOException;
 import java.security.Policy;
 import java.util.List;
 
+@Slf4j
 public class TestClient {
-
-    private static final Logger logger = LoggerFactory.getLogger(TestClient.class);
 
     public static void main(String[] args) throws IOException {
 
@@ -35,7 +33,7 @@ public class TestClient {
 
         List<Lobby> currentLobbies = gameInitializer.getCurrentLobbies();
 
-        currentLobbies.forEach(lobby -> logger.info("Lobby: {}", lobby));
+        currentLobbies.forEach(lobby -> log.info("Lobby: {}", lobby));
 
         if (currentLobbies.size() == 1) {
             gameInitializer.joinLobby(currentLobbies.get(0), clientPlayer);

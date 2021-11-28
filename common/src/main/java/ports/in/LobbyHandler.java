@@ -11,6 +11,6 @@ public interface LobbyHandler {
     public UUID createLobby(String lobbyName, ClientPlayer clientPlayer);
     public List<Lobby> getCurrentLobbies();
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer);
-    public boolean leavLobby(ClientPlayer clientPlayer);
+    public boolean leaveLobby(ClientPlayer clientPlayer);
 
 }

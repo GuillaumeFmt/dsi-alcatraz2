@@ -1,9 +1,9 @@
 package adapters;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ports.in.LobbyHandler;
 import ports.in.Registration;
 
@@ -11,21 +11,16 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
+@RequiredArgsConstructor
 public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerLobbyHandlerRMIStub.class);
-
     private final Registration registration;
-    private LobbyHandler lobbyHandler;
-
-    public ServerLobbyHandlerRMIStub(Registration registration, LobbyHandler lobbyHandler) {
-        this.registration = registration;
-        this.lobbyHandler = lobbyHandler;
-    }
+    private final LobbyHandler lobbyHandler;
 
     @Override
     public UUID register(ClientPlayer clientPlayer) throws RemoteException {
-        logger.info("This is: {}", clientPlayer);
+        log.info("This is: {}", clientPlayer);
         return registration.addClientPlayer(clientPlayer);
     }
 
@@ -42,12 +37,11 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     @Override
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException {
         return lobbyHandler.joinLobby(lobby, clientPlayer);
-        //return Collections.emptyList();
     }
 
     @Override
     public Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
-        return lobbyHandler.leavLobby(clientPlayer);
+        return lobbyHandler.leaveLobby(clientPlayer);
     }
 
     @Override
