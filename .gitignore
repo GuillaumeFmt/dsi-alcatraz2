@@ -1,3 +1,7 @@
 */target/
 *.iml
 /.idea/
+*.log
+/client/dependency-reduced-pom.xml
+/common/dependency-reduced-pom.xml
+/spread_src/windows/spread-bin-4.4.0-Windows8_x64/bin/win32/spread.conf
