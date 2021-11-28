@@ -2,13 +2,16 @@ package core.usecase;
 
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
+import exceptions.ClientNotReachableException;
 import exceptions.ServerNotPrimaryException;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.ServerLobbyHandler;
 import ports.in.RemoteMoveReceiver;
+import utils.RetryOnExceptionHandler;
 
+import java.net.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,14 +25,16 @@ public class GameInitializer {
     private ClientPlayer myClientPlayer;
     private Registry registry;
     private String[] servers;
+    private RetryOnExceptionHandler retryOnExceptionHandler;
 
     public GameInitializer(String[] servers, ServerLobbyHandler serverLobbyHandler) {
+        this.retryOnExceptionHandler = new RetryOnExceptionHandler(3, 2000);
         this.servers = servers;
         this.serverLobbyHandler = serverLobbyHandler;
         rebindServer();
     }
 
-    public void registerUser(String playerName, int port) {
+    public void registerUser(String playerName, int port) throws ClientNotReachableException {
         myClientPlayer = new ClientPlayer("  ",port,playerName);
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
         UUID id = null;
@@ -43,12 +48,13 @@ public class GameInitializer {
                 log.info("Retrying another server");
                 rebindServer();
                 registerClientMoverStub(new RemoteMoveReceiverUseCase());
+                this.retryOnExceptionHandler.exceptionOccurred();
                 continue;
             }
         }
     }
 
-    public void createLobby(String lobbyName) {
+    public void createLobby(String lobbyName) throws ClientNotReachableException {
         UUID id = null;
 
         while(true) {
@@ -60,12 +66,13 @@ public class GameInitializer {
                 log.info("Retrying another server");
                 rebindServer();
                 registerClientMoverStub(new RemoteMoveReceiverUseCase());
+                this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
 
     }
 
-    public List<Lobby> getCurrentLobbies() {
+    public List<Lobby> getCurrentLobbies() throws ClientNotReachableException {
         while(true) {
             try {
                 return serverLobbyHandler.currentLobbies();
@@ -73,12 +80,13 @@ public class GameInitializer {
                 log.info("Retrying another server");
                 rebindServer();
                 registerClientMoverStub(new RemoteMoveReceiverUseCase());
+                this.retryOnExceptionHandler.exceptionOccurred();
             }
             return Collections.emptyList();
         }
     }
 
-    public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
+    public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ClientNotReachableException {
         List<ClientPlayer> currentPlayersInLobby = null;
         while (true){
             try {
@@ -97,11 +105,12 @@ public class GameInitializer {
                 log.info("Retrying another server");
                 rebindServer();
                 registerClientMoverStub(new RemoteMoveReceiverUseCase());
+                this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
     }
 
-    public void leaveLobby(ClientPlayer clientPlayer) {
+    public void leaveLobby(ClientPlayer clientPlayer) throws ClientNotReachableException {
         while(true){
             try {
                 if (Boolean.TRUE.equals(serverLobbyHandler.leaveLobby(clientPlayer))) {
@@ -111,6 +120,7 @@ public class GameInitializer {
                 log.info("Retrying another server");
                 rebindServer();
                 registerClientMoverStub(new RemoteMoveReceiverUseCase());
+                this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
     }
@@ -139,7 +149,7 @@ public class GameInitializer {
     private boolean getRegistry(String hostname, int port) {
         try {
             this.registry = LocateRegistry.getRegistry(hostname, port);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return true;
         }

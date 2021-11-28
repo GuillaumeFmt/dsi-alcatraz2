@@ -45,6 +45,7 @@ public class PrimaryServerHandler {
                 }
             }
         }
+        LocalServerState.getInstance().setPrimary(this.actualPrimaryServerName);
     }
 
     public void primaryServerElection(SpreadGroup[] groupMembers) {

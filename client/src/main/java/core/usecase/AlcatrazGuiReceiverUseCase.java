@@ -1,11 +1,13 @@
 package core.usecase;
 
+import exceptions.ClientNotReachableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,12 +20,20 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
     @Override
     public void createUser(String userName, int port) {
         log.info("Username: {}, Port: {}", userName, port);
-        gameInitializer.registerUser(userName, port);// register user on server
+        try {
+            gameInitializer.registerUser(userName, port);// register user on server
+        } catch (ClientNotReachableException e) {
+            System.exit(0);
+        }
     }
 
     @Override
     public Lobby createLobby(String lobbyName) {
-        gameInitializer.createLobby(lobbyName);
+        try {
+            gameInitializer.createLobby(lobbyName);
+        } catch (ClientNotReachableException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -39,6 +49,11 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
 
     @Override
     public List<Lobby> getLobbies() {
-        return gameInitializer.getCurrentLobbies();
+        try {
+            return gameInitializer.getCurrentLobbies();
+        } catch (ClientNotReachableException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 }

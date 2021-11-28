@@ -31,9 +31,9 @@ public class TestClient {
         GameInitializer gameInitializer = new GameInitializer(servers, serverLobbyHandler);
         //gameInitializer.init("Client 2", 9872);
 
-        List<Lobby> currentLobbies = gameInitializer.getCurrentLobbies();
+        //List<Lobby> currentLobbies = gameInitializer.getCurrentLobbies();
 
-        currentLobbies.forEach(lobby -> log.info("Lobby: {}", lobby));
+        //currentLobbies.forEach(lobby -> log.info("Lobby: {}", lobby));
 
         /*
         if (currentLobbies.size() == 1) {

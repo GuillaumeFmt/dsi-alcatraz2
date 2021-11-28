@@ -17,6 +17,8 @@ public class RegistrationUseCase implements Registration {
     public UUID addClientPlayer(ClientPlayer clientPlayer) throws RemoteException {
         // check if primary, otherwise throw exception and do not execute the add client command
         if (!LocalServerState.getInstance().amIPrimary()) {
+            System.out.println(LocalServerState.getInstance().myServerName);
+            System.out.println(LocalServerState.getInstance().actualPrimaryServerName);
             System.out.println("addClientPlayer Request not executed, I'm not primary Server.");
             throw new RemoteException("Cant handle request, I'm not primary Server.");
         }

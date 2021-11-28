@@ -78,6 +78,7 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     public boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
         // check if primary, otherwise throw exception and do not execute the leave lobby command
         if (!LocalServerState.getInstance().amIPrimary()) {
+
             throw new RemoteException("Cant handle request, I'm not primary Server.");
         }
 
