@@ -12,6 +12,8 @@ import ports.in.RemoteMoveReceiver;
 import utils.RetryOnExceptionHandler;
 
 import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -31,12 +33,13 @@ public class GameInitializer {
         this.retryOnExceptionHandler = new RetryOnExceptionHandler(3, 2000);
         this.servers = servers;
         this.serverLobbyHandler = serverLobbyHandler;
-        rebindServer();
     }
 
     public void registerUser(String playerName, int port) throws ClientNotReachableException {
         myClientPlayer = new ClientPlayer("  ",port,playerName);
-        registerClientMoverStub(new RemoteMoveReceiverUseCase());
+
+        rebindServer();
+
         UUID id = null;
 
         while(true) {
@@ -47,7 +50,7 @@ public class GameInitializer {
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
                 rebindServer();
-                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+
                 this.retryOnExceptionHandler.exceptionOccurred();
                 continue;
             }
@@ -65,7 +68,7 @@ public class GameInitializer {
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
                 rebindServer();
-                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
@@ -79,7 +82,7 @@ public class GameInitializer {
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
                 rebindServer();
-                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
             return Collections.emptyList();
@@ -104,7 +107,7 @@ public class GameInitializer {
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
                 rebindServer();
-                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
@@ -119,16 +122,18 @@ public class GameInitializer {
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
                 rebindServer();
-                registerClientMoverStub(new RemoteMoveReceiverUseCase());
+
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
     }
 
-    private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
+    private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver, String hostname, int port) {
         try {
             ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), myClientPlayer.getPort());
             registry.rebind(myClientPlayer.getPlayerName(), clientMoverRMIStub);
+            //Naming.rebind("rmi://" + hostname + ":"+ port +"/".concat(myClientPlayer.getPlayerName()), clientMoverRMIStub);
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -136,21 +141,33 @@ public class GameInitializer {
 
     private void rebindServer(){
         Iterator<String> iterator = Arrays.asList(servers).iterator();
-        String server = iterator.next();
-        int port = Integer.parseInt(server.split(":")[1]);
-        server = server.split(":")[0];
 
-        while(getRegistry(server, port)){
-            System.out.println("Trying to bind to new server" + server);
-            server = iterator.next();
+        do{
+            String serverPort = iterator.next();
+
+            String server = serverPort.split(":")[0];
+            int port = Integer.parseInt(serverPort.split(":")[1]);
+
+            log.info("Trying to bind to new server {} on port {}", server, port);
+
+            try {
+                getRegistry(server, port);
+            } catch (ClientNotReachableException e) {
+                log.error(e.getMessage());
+                System.exit(0);
+            }
         }
+        while(iterator.hasNext());
     }
 
-    private boolean getRegistry(String hostname, int port) {
+    private boolean getRegistry(String hostname, int port) throws ClientNotReachableException {
         try {
             this.registry = LocateRegistry.getRegistry(hostname, port);
-        } catch (Exception e) {
-            e.printStackTrace();
+            registerClientMoverStub(new RemoteMoveReceiverUseCase(), hostname, port);
+
+        } catch (RemoteException e) {
+            log.error("Failed to connect to server {}", e.getMessage());
+            this.retryOnExceptionHandler.exceptionOccurred();
             return true;
         }
         return false;

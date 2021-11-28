@@ -15,32 +15,18 @@ public class WelcomeWindow extends JFrame
     private JButton exitButton;
     private JPanel mainPanel;
 
-    private AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter;
-
-    public WelcomeWindow() {
-        this.alcatrazGUIReceiverAdapter = alcatrazGUIReceiverAdapter;
-        setTitle("Shawshank Redemption");
-        setSize(500,500);
-        setLocationRelativeTo(this);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        add(mainPanel);
-        addActionListeners();
-        setVisible(true);
-    }
-
 
     public WelcomeWindow(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter) {
-        this.alcatrazGUIReceiverAdapter = alcatrazGUIReceiverAdapter;
         setTitle("Shawshank Redemption");
         setSize(500,500);
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(mainPanel);
-        addActionListeners();
+        addActionListeners(alcatrazGUIReceiverAdapter);
         setVisible(true);
     }
 
-    public void addActionListeners()
+    public void addActionListeners(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter)
     {
         saveButton.addActionListener(new SaveButtonController(this, alcatrazGUIReceiverAdapter));
         exitButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {System.exit(0);}});

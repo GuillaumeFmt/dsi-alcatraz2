@@ -32,7 +32,9 @@ public class Client {
 
         AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(gameInitializer);
         AlcatrazGUIReceiverAdapter guiReceiverAdapter = new AlcatrazGUIReceiverAdapter(alcatrazGUIReceiver);
-        System.in.read(); // dirty workaround for timing issue
+
+
+
         WelcomeWindow welcomeWindow = new WelcomeWindow(guiReceiverAdapter);
 
         // TODO wait for keyboard input
