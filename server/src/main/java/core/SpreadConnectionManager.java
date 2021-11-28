@@ -1,6 +1,7 @@
 package core;
 
 import adapters.AdvancedMessageListenerAdapter;
+import model.LocalServerState;
 import model.SpreadGroupState;
 import spread.SpreadConnection;
 import spread.SpreadException;
@@ -33,7 +34,8 @@ public class SpreadConnectionManager {
             System.err.printf("Exception '%s' received while trying to connect to Spread Daemon on localhost:4803%n", e.getMessage());
             throw new RuntimeException();
         }
-        SpreadGroupState.myGroup = spreadConnection.getPrivateGroup();
+        LocalServerState.getInstance().setMyServerName(spreadConnection.getPrivateGroup().toString());
+        SpreadGroupState.myGroup = spreadConnection.getPrivateGroup();  // TODO: check if this line can be deleted
         System.out.println("Connection established with spread daemon on default localhost:4803");
         System.out.printf("My name is %s%n", spreadConnection.getPrivateGroup());
         System.out.printf("Trying to join group %s%n", this.groupName);

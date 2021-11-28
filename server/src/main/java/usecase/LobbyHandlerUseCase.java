@@ -17,7 +17,14 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     // TODO: implement "wait for response behaviour" (after sending spread message to the replicas, we should wait for the ok response -> blocking approach)
 
     @Override
-    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) {
+    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException {
+        // check if primary, otherwise throw exception and do not execute the create lobby command
+        if (!LocalServerState.getInstance().amIPrimary()) {
+            System.out.println("createLobby Request not executed, I'm not primary Server.");
+            throw new RemoteException("Cant handle request, I'm not primary Server.");
+        }
+
+
         Lobby lobby = new Lobby(lobbyName, clientPlayer);
         ArrayList<Lobby> lobbyList = LocalServerState.getInstance().getLobbyList();
         lobbyList.add(lobby);
@@ -32,7 +39,12 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     }
 
     @Override
-    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
+    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException {
+        // check if primary, otherwise throw exception and do not execute the join lobby command
+        if (!LocalServerState.getInstance().amIPrimary()) {
+            throw new RemoteException("Cant handle request, I'm not primary Server.");
+        }
+
         ArrayList<ClientPlayer> clientPlayers = new ArrayList<>();
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
         ArrayList<Lobby> newLobbies = new ArrayList<>();
@@ -63,7 +75,12 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     }
 
     @Override
-    public boolean leaveLobby(ClientPlayer clientPlayer) {
+    public boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
+        // check if primary, otherwise throw exception and do not execute the leave lobby command
+        if (!LocalServerState.getInstance().amIPrimary()) {
+            throw new RemoteException("Cant handle request, I'm not primary Server.");
+        }
+
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
         ArrayList<Lobby> newLobbies = new ArrayList<>();
         boolean playerRemoved = false;

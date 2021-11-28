@@ -26,4 +26,6 @@ public class AlcatrazGUIReceiverAdapter {
         alcatrazGUIReceiver.createLobby(lobbyName);
     }
 
+    // TODO: implement the other methods...
+
 }

@@ -79,6 +79,7 @@ public class PrimaryServerHandler {
         }
     }
 
+    // TODO: check if this can be deleted -> same method in LocalServerState
     public Boolean amIPrimary() {
         if (actualPrimaryServerName != null) {
             SpreadGroup myGroup = SpreadGroupState.myGroup;

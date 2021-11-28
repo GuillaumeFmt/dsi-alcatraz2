@@ -5,6 +5,7 @@ import model.LocalServerState;
 import models.ClientPlayer;
 import ports.in.Registration;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +14,13 @@ import java.util.UUID;
 public class RegistrationUseCase implements Registration {
 
     @Override
-    public UUID addClientPlayer(ClientPlayer clientPlayer) {
+    public UUID addClientPlayer(ClientPlayer clientPlayer) throws RemoteException {
+        // check if primary, otherwise throw exception and do not execute the add client command
+        if (!LocalServerState.getInstance().amIPrimary()) {
+            System.out.println("addClientPlayer Request not executed, I'm not primary Server.");
+            throw new RemoteException("Cant handle request, I'm not primary Server.");
+        }
+
         ArrayList<ClientPlayer> registeredPlayers = new ArrayList<>();
         registeredPlayers = LocalServerState.getInstance().getRegisteredClientPlayers();
         registeredPlayers.add(clientPlayer);
@@ -24,7 +31,12 @@ public class RegistrationUseCase implements Registration {
     }
 
     @Override
-    public List<ClientPlayer> getClientPlayers() {
+    public List<ClientPlayer> getClientPlayers() throws RemoteException {
+        // check if primary, otherwise throw exception and do not execute the getClientPlayers command
+        if (!LocalServerState.getInstance().amIPrimary()) {
+            System.out.println("getClientPlayers Request not executed, I'm not primary Server.");
+            throw new RemoteException("Cant handle request, I'm not primary Server.");
+        }
         return LocalServerState.getInstance().getRegisteredClientPlayers();
     }
 }
