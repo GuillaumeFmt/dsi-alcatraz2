@@ -1,5 +1,6 @@
 package core.view.controller;
 
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import models.ClientPlayer;
 import core.view.LobbyWindow;
 
@@ -15,12 +16,13 @@ public class CreateLobbyButtonController implements ActionListener
 
     private LobbyWindow lobbyWindow;
     private ClientPlayer clientPlayer;
+    private AlcatrazGUIReceiverAdapter guiReceiverAdapter;
 
-    public CreateLobbyButtonController(LobbyWindow lobbyWindow)
+    public CreateLobbyButtonController(LobbyWindow lobbyWindow, AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         this.lobbyWindow = lobbyWindow;
         clientPlayer = lobbyWindow.getClientPlayer();
-
+        this.guiReceiverAdapter = guiReceiverAdapter;
     }
     @Override
     public void actionPerformed(ActionEvent e)
@@ -28,8 +30,9 @@ public class CreateLobbyButtonController implements ActionListener
         lobbyWindow.getTextPane().setText("You clicked onto the create Button");
         String lobbyName = JOptionPane.showInputDialog(lobbyWindow,"Enter your lobby name: ","LobbyName",JOptionPane.INFORMATION_MESSAGE);
 
-        lobbyWindow.getAddRowController().addRow(lobbyName,clientPlayer.getPlayerName());
-
-
+        // TODO: implement logic to create new lobby and get new lobby list for the UI
+        //lobbyWindow.getAddRowController().addRow(lobby.getLobbyId(), lobby.getLobbyName(), lobbyName,clientPlayer.getPlayerName(), lobby.getLobbyParticipants().size(), lobby.isStarted());
+        guiReceiverAdapter.createLobby(lobbyName);
+        lobbyWindow.createTable();
     }
 }

@@ -26,7 +26,6 @@ public class LobbyHandlerUseCase implements LobbyHandler {
         return lobby.getLobbyId();
     }
 
-
     @Override
     public List<Lobby> getCurrentLobbies() {
         return LocalServerState.getInstance().getLobbyList();

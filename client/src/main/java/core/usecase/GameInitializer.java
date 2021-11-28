@@ -19,12 +19,11 @@ import java.util.UUID;
 public class GameInitializer {
 
     private final ServerLobbyHandler serverLobbyHandler;
-    private final ClientPlayer myClientPlayer;
+    private ClientPlayer myClientPlayer;
     private Registry registry;
 
-    public GameInitializer(int serverPort, ServerLobbyHandler serverLobbyHandler, ClientPlayer clientPlayer) {
+    public GameInitializer(int serverPort, ServerLobbyHandler serverLobbyHandler) {
         this.serverLobbyHandler = serverLobbyHandler;
-        this.myClientPlayer = clientPlayer;
         try {
             this.registry = LocateRegistry.getRegistry(serverPort);
         } catch (RemoteException e) {
@@ -33,7 +32,8 @@ public class GameInitializer {
 
     }
 
-    public void init() {
+    public void init(String playerName, int port) {
+        myClientPlayer = new ClientPlayer("  ",port,playerName);
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
         UUID id = serverLobbyHandler.register(myClientPlayer);
         log.info("My Player UUID: {}", id);

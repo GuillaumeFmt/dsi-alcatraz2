@@ -32,19 +32,14 @@ public class SaveButtonController implements ActionListener
         userName = welcomeWindow.getPlayerName().getText();
         //System.out.println("getplayername: "+userName);
         clientPlayer = new ClientPlayer("",533,userName);
-//        guiReceiverAdapter.createUser(userName, 9871);
+        guiReceiverAdapter.createUser(userName, 9871);
         System.out.println("getplayer name client "+clientPlayer.getPlayerName());
-        LobbyWindow lobby = new LobbyWindow(clientPlayer);
+        LobbyWindow lobby = new LobbyWindow(clientPlayer, guiReceiverAdapter);
         lobby.setName(userName);
         lobby.getTextPane().setText("Hello "+userName);
         //TODO: set ip and port with proper values
 
         welcomeWindow.setVisible(false);
-
-
-
-
-
 
     }
 }

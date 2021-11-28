@@ -24,21 +24,21 @@ public class Client {
 
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
-        AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase();
+        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
+
+        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler);
+        //gameInitializer.createLobby("Lobby 1");
+
+        AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(gameInitializer);
         AlcatrazGUIReceiverAdapter guiReceiverAdapter = new AlcatrazGUIReceiverAdapter(alcatrazGUIReceiver);
         WelcomeWindow welcomeWindow = new WelcomeWindow(guiReceiverAdapter);
-
-        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
-        ClientPlayer clientPlayer = new ClientPlayer("0.0.0.0", 9871, "Client 1");
-
-        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler, clientPlayer);
-        gameInitializer.init();
-        gameInitializer.createLobby("Lobby 1");
 
         // TODO wait for keyboard input
 
         //attach the gui here
         System.in.read();
+
+
 
         ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2");
         // clientMover is "Client 2" in this case

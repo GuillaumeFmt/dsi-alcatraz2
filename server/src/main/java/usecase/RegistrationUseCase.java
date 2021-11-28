@@ -19,6 +19,7 @@ public class RegistrationUseCase implements Registration {
         registeredPlayers.add(clientPlayer);
         registeredPlayers.forEach(player -> log.info("Registered player: {}", player));
         LocalServerState.getInstance().setRegisteredClientPlayers(registeredPlayers);
+        ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
         return UUID.randomUUID();
     }
 

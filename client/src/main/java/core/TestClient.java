@@ -26,19 +26,20 @@ public class TestClient {
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
         ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
-        ClientPlayer clientPlayer = new ClientPlayer("0.0.0.0", 9872, "Client 2");
 
-        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler, clientPlayer);
-        gameInitializer.init();
+        GameInitializer gameInitializer = new GameInitializer(9876, serverLobbyHandler);
+        gameInitializer.init("Client 2", 9872);
 
         List<Lobby> currentLobbies = gameInitializer.getCurrentLobbies();
 
         currentLobbies.forEach(lobby -> log.info("Lobby: {}", lobby));
 
+        /*
         if (currentLobbies.size() == 1) {
             gameInitializer.joinLobby(currentLobbies.get(0), clientPlayer);
             gameInitializer.leaveLobby(clientPlayer);
         }
+        */
 
         // TODO wait for keyboard input
         System.in.read();

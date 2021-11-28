@@ -1,11 +1,14 @@
 package core.view;
 
+import adapters.in.AlcatrazGUIReceiverAdapter;
+import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import core.view.controller.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+@Slf4j
 public class LobbyWindow extends JFrame{
     private JPanel mainPanel;
     private JPanel titlePanel;
@@ -21,6 +24,7 @@ public class LobbyWindow extends JFrame{
     private JTextPane textPane;
 
     private ClientPlayer clientPlayer;
+    private AlcatrazGUIReceiverAdapter guiReceiverAdapter;
 
     private DefaultTableModel tableModel;
 
@@ -35,7 +39,7 @@ public class LobbyWindow extends JFrame{
 
     public static int lobbyIDCounter = 0;
 
-    public LobbyWindow(ClientPlayer clientPLayer)
+    public LobbyWindow(ClientPlayer clientPLayer, AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         super("AlcatrazLobby");
         setSize(500,500);
@@ -44,6 +48,7 @@ public class LobbyWindow extends JFrame{
         createTable();
         add(mainPanel);
         this.clientPlayer = clientPLayer;
+        this.guiReceiverAdapter = guiReceiverAdapter;
         addListeners();
         this.addRowController = new AddRowController(this);
         setVisible(true);
@@ -56,14 +61,25 @@ public class LobbyWindow extends JFrame{
 
         lobbyTable.setModel(tableModel);
 
-        //example to add into table
-     //   tableModel.addRow(new Object[]{"test","test","test","test","test",Boolean.TRUE,});
-
-
+        try {
+            guiReceiverAdapter.getLobbies().stream().forEach(lobby -> {
+                StringBuilder userList = new StringBuilder();
+                lobby.getLobbyParticipants().forEach(participant -> userList.append(clientPlayer.getPlayerName()));
+                addRowController.addRow(
+                        lobby.getLobbyId(),
+                        lobby.getLobbyName(),
+                        lobby.getLobbyOwner().getPlayerName(),
+                        userList.toString(),
+                        lobby.getLobbyParticipants().size(),
+                        lobby.isStarted());
+            });
+        } catch (Exception e) {
+            log.error("No lobbies available, exception: " + e.getMessage());
+        }
     }
     public void addListeners()
     {
-        createLobbyButton.addActionListener(new CreateLobbyButtonController(this));
+        createLobbyButton.addActionListener(new CreateLobbyButtonController(this, guiReceiverAdapter));
         joinLobbyButton.addActionListener(new JoinLobbyButtonController(this));
         leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this));
         startGameButton.addActionListener(new StartGameButtonController(this));

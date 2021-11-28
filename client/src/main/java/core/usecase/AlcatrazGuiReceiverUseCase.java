@@ -1,20 +1,34 @@
 package core.usecase;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor// This creates a constructor (with init of the gameInitializer variable) automatically
 public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
 
+    private final GameInitializer gameInitializer;
 
-@Override
+    @Override
     public void createUser(String userName, int port) {
         log.info("Username: {}, Port: {}", userName, port);
+        gameInitializer.init(userName, port);// register user on server
+    }
+
+    @Override
+    public Lobby createLobby(String lobbyName) {
+        gameInitializer.createLobby(lobbyName);
+        return null;
     }
 
     @Override
@@ -29,6 +43,6 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
 
     @Override
     public List<Lobby> getLobbies() {
-        return null;
+        return gameInitializer.getCurrentLobbies();
     }
 }
