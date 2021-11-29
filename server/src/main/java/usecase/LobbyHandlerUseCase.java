@@ -44,6 +44,7 @@ public class LobbyHandlerUseCase implements LobbyHandler {
         if (!LocalServerState.getInstance().amIPrimary()) {
             throw new RemoteException("Cant handle request, I'm not primary Server.");
         }
+        //TODO: check if USER is already in lobby - if so, dont let join
 
         ArrayList<ClientPlayer> clientPlayers = new ArrayList<>();
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();

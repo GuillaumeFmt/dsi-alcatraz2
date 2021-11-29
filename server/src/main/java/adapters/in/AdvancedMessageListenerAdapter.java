@@ -29,7 +29,7 @@ public class AdvancedMessageListenerAdapter implements AdvancedMessageListener {
                     break;
                 case UPDATE_SERVER_STATE:
                     System.out.printf("with MessageType %s containing %s\n", MessageType.UPDATE_SERVER_STATE,  spreadMessageData.getLocalServerState());
-                    if (!PrimaryServerHandler.getInstance().amIPrimary()) {
+                    if (!LocalServerState.getInstance().amIPrimary()) {
                         System.out.println("Setting local Server State...");
                         LocalServerState.setLocalServerState(spreadMessageData.getLocalServerState());
                     }

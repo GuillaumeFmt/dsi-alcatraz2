@@ -1,5 +1,6 @@
 package core;
 
+import lombok.extern.slf4j.Slf4j;
 import model.SpreadMessageData;
 import spread.SpreadConnection;
 import spread.SpreadException;
@@ -8,6 +9,7 @@ import spread.SpreadMessage;
 
 import java.io.*;
 
+@Slf4j
 public class MessageHandler {
 
     SpreadConnectionManager spreadConnectionManager = SpreadConnectionManager.getInstance();
@@ -15,8 +17,12 @@ public class MessageHandler {
     // is used for multicasting
     public void sendMessage(SpreadMessageData message) {
         SpreadGroup spreadGroup = spreadConnectionManager.getSpreadGroup();
-        System.out.println("In sendMessage: Sending message to group " + spreadGroup.toString());
-        System.out.println("In sendMessage: Message Content " + message.getMessageType() + message.getPrimary());   // TODO: refactor (case if no primary in message... otherwise null will be printed out)
+        log.info("In sendMessage: Sending message to group {}", spreadGroup.toString());
+        if(message.getPrimary() != null){
+            log.info("In sendMessage: Message Content {} {}", message.getMessageType(), message.getPrimary());
+        }else {
+            log.info("In sendMessage: Message Content {}", message.getMessageType());
+        }
         try {
             sendMessage(message,spreadGroup);
         } catch (SpreadException e) {
@@ -42,7 +48,7 @@ public class MessageHandler {
             spreadConnection.multicast(spreadMessage);
             //System.out.println("In Try block after multicast message");
 
-        System.out.printf("Successfully sent message %s\n", message.getMessageType());
+        log.info("Successfully sent message {}", message.getMessageType());
     }
 
     public static byte[] serialize(Object obj) throws IOException {
