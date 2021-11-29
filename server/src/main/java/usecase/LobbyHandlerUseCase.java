@@ -24,6 +24,7 @@ public class LobbyHandlerUseCase implements LobbyHandler {
             throw new RemoteException("Cant handle request, I'm not primary Server.");
         }
 
+        // TODO: implement logic to check if the client is already in a lobby (currently a client can create multible lobbies and joins every lobby he/she creates)
 
         Lobby lobby = new Lobby(lobbyName, clientPlayer);
         ArrayList<Lobby> lobbyList = LocalServerState.getInstance().getLobbyList();
@@ -44,25 +45,18 @@ public class LobbyHandlerUseCase implements LobbyHandler {
         if (!LocalServerState.getInstance().amIPrimary()) {
             throw new RemoteException("Cant handle request, I'm not primary Server.");
         }
-        //TODO: check if USER is already in lobby - if so, dont let join
 
-        ArrayList<ClientPlayer> clientPlayers = new ArrayList<>();
-        ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
-        ArrayList<Lobby> newLobbies = new ArrayList<>();
         boolean lobbyFound = false;
 
+        ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
+        Lobby lobbyToAlter = null;
         try {
             for (Lobby currentLobby : currentLobbies) {
-                if (currentLobby.getLobbyId().equals(lobby.getLobbyId())) {
-                    currentLobby.addLobbyParticipant(clientPlayer);
-                    clientPlayers = currentLobby.getLobbyParticipants();
-                    log.info("ClientPlayer: {} joined the Lobby: {}", clientPlayer, lobby);
-                    newLobbies.add(currentLobby);
-                    lobbyFound = true;
-                }
-                newLobbies.add(currentLobby);
+                if (currentLobby.getLobbyId().equals(lobby.getLobbyId()))
+                    currentLobbies.remove(currentLobby);
+                lobbyToAlter = currentLobby;
+                lobbyFound = true;
             }
-
             if (!lobbyFound) {
                 throw new Exception();
             }
@@ -70,9 +64,21 @@ public class LobbyHandlerUseCase implements LobbyHandler {
             log.error("Could not add player to lobby, Lobby {} not found! - Exception: {}", lobby, e.getMessage());
         }
 
-        LocalServerState.getInstance().setLobbyList(newLobbies);
+        if(lobbyFound) {
+            for (ClientPlayer c : lobbyToAlter.getLobbyParticipants()) {
+                if (c.getPlayerName().equals(clientPlayer.getPlayerName())) {
+                    log.error("ClientPlayer: {} already in the Lobby: {}", clientPlayer, lobby);
+                } else {
+                    lobbyToAlter.addLobbyParticipant(clientPlayer);
+                    log.info("ClientPlayer: {} joined the Lobby: {}", clientPlayer, lobby);
+                }
+            }
+        }
+
+        currentLobbies.add(lobbyToAlter);
+        LocalServerState.getInstance().setLobbyList(currentLobbies);
         ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
-        return clientPlayers;
+        return lobbyToAlter.getLobbyParticipants();
     }
 
     @Override
@@ -91,16 +97,33 @@ public class LobbyHandlerUseCase implements LobbyHandler {
             ArrayList<ClientPlayer> newClientPlayers = new ArrayList<>();
 
             for (ClientPlayer currentClientPlayer : currentLobby.getLobbyParticipants()) {
-                if (currentClientPlayer.equals(clientPlayer)) {
+                if (currentClientPlayer.getPlayerName().equals(clientPlayer.getPlayerName())) {
                     currentLobby.setParticipantCount(currentLobby.getParticipantCount()-1);
                     playerRemoved = true;
+                    if(currentLobby.getLobbyOwner().getPlayerName().equals(clientPlayer.getPlayerName()))
+                    {
+                        ArrayList<ClientPlayer> playerInsideLobby = new ArrayList<>();
+                        playerInsideLobby = currentLobby.getLobbyParticipants();
+                        for(ClientPlayer clientPlayer1 : playerInsideLobby)
+                        {
+                            if(!clientPlayer1.getPlayerName().equals(clientPlayer.getPlayerName()))
+                            {
+                                currentLobby.setLobbyOwner(clientPlayer1);
+                                break;
+                            }
+                        }
+                    }
                     continue;
                 } else {
                     newClientPlayers.add(currentClientPlayer);
                 }
             }
             currentLobby.setLobbyParticipants(newClientPlayers);
-            newLobbies.add(currentLobby);
+            if(!newClientPlayers.isEmpty())
+            {
+                newLobbies.add(currentLobby);
+            }
+
         }
 
         System.out.println("Leave lobby operation for " + clientPlayer.toString() + (playerRemoved ? " successful": " not successful -> player not found in lobbies"));

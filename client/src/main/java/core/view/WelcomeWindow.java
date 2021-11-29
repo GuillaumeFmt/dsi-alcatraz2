@@ -30,6 +30,7 @@ public class WelcomeWindow extends JFrame
 
     public void addActionListeners(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter)
     {
+
         saveButton.addActionListener(new SaveButtonController(this, alcatrazGUIReceiverAdapter));
         exitButton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {System.exit(0);}});
     }

@@ -34,16 +34,22 @@ public class LeaveLobbyButtonController implements ActionListener
 
 
         int row = lobbyWindow.getLobbyTable().getSelectedRow();
-        System.out.println(row);
-        UUID lobbyId = (UUID) lobbyWindow.getLobbyTable().getValueAt(row, 0);
-        String lobbyName = String.valueOf(lobbyWindow.getLobbyTable().getValueAt(row, 1));
+        if(row >= 0) {
+            log.info("This is the selected row " + row);
+            UUID lobbyId = (UUID) lobbyWindow.getLobbyTable().getValueAt(row, 0);
+            String lobbyName = String.valueOf(lobbyWindow.getLobbyTable().getValueAt(row, 1));
 
 
-        guiReceiverAdapter.leaveLobby(lobbyId);
+            guiReceiverAdapter.leaveLobby(lobbyId);
 
-        log.info("Selected LobbyID is {}",lobbyId.toString());
-        lobbyWindow.getTextPane().setText("You left the "+lobbyName+ " lobby");
-        lobbyWindow.createTable(guiReceiverAdapter);
+            log.info("Selected LobbyID is {}", lobbyId.toString());
+            lobbyWindow.getTextPane().setText("You left the " + lobbyName + " lobby");
+            lobbyWindow.createTable(guiReceiverAdapter);
+        }
+        else
+        {
+            lobbyWindow.getTextPane().setText("Please select the desired lobby");
+        }
 
 
     }
