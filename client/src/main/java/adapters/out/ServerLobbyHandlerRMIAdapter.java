@@ -97,7 +97,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     public List<Lobby> currentLobbies() throws ClientNotReachableException {
         while (true) {
             try {
-                return serverLobbyHandlerProxy.currentLobbies();
+            return serverLobbyHandlerProxy.currentLobbies();
             } catch (RemoteException e) {
                 e.printStackTrace();
                 log.info("Got remote exception while trying to get Lobbies {}", e.getMessage());

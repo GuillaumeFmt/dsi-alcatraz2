@@ -36,13 +36,16 @@ public class JoinLobbyButtonController implements ActionListener
         int row = lobbyWindow.getLobbyTable().getSelectedRow();
         UUID lobbyId = (UUID) lobbyWindow.getLobbyTable().getValueAt(row, 0);
 
+        String lobbyName = String.valueOf(lobbyWindow.getLobbyTable().getValueAt(row, 1));
+
         Optional<Lobby> first = ClientState.getInstance().getCurrentLobbies().stream().filter(l -> l.getLobbyId() == lobbyId).findFirst();
         Lobby lobbyToJoin = first.orElseThrow();
 
         guiReceiverAdapter.joinLobby(lobbyToJoin);
 
         log.info("Selected lobbId is {}", lobbyId.toString());
-        lobbyWindow.getTextPane().setText("You clicked onto the join Button");
+        lobbyWindow.getTextPane().setText("You joined onto the "+lobbyName+ " lobby");
         lobbyWindow.createTable(guiReceiverAdapter);
+        lobbyWindow.getLeaveLobbyButton().setEnabled(true);
     }
 }

@@ -91,6 +91,7 @@ public class LobbyHandlerUseCase implements LobbyHandler {
 
             for (ClientPlayer currentClientPlayer : currentLobby.getLobbyParticipants()) {
                 if (currentClientPlayer.equals(clientPlayer)) {
+                    currentLobby.setParticipantCount(currentLobby.getParticipantCount()-1);
                     playerRemoved = true;
                     continue;
                 } else {
