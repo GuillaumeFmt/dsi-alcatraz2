@@ -7,6 +7,7 @@ import core.view.controller.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
 @Slf4j
 public class LobbyWindow extends JFrame{
@@ -44,11 +45,11 @@ public class LobbyWindow extends JFrame{
         setSize(500,500);
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.addRowController = new AddRowController(this);
         createTable(guiReceiverAdapter);
         add(mainPanel);
         this.clientPlayer = clientPLayer;
         addListeners(guiReceiverAdapter);
-        this.addRowController = new AddRowController(this);
         setVisible(true);
     }
     public void createTable(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
@@ -62,7 +63,11 @@ public class LobbyWindow extends JFrame{
         try {
             guiReceiverAdapter.getLobbies().stream().forEach(lobby -> {
                 StringBuilder userList = new StringBuilder();
-                lobby.getLobbyParticipants().forEach(participant -> userList.append(clientPlayer.getPlayerName()));
+                ArrayList<ClientPlayer> players = lobby.getLobbyParticipants();
+
+                log.debug("Players in the lobby {}", players.toString());
+                players.forEach(player -> userList.append(player.getPlayerName()));
+
                 addRowController.addRow(
                         lobby.getLobbyId(),
                         lobby.getLobbyName(),
@@ -72,6 +77,7 @@ public class LobbyWindow extends JFrame{
                         lobby.isStarted());
             });
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("No lobbies available, exception: " + e.getMessage());
         }
     }

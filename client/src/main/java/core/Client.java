@@ -8,6 +8,7 @@ import core.usecase.AlcatrazGuiReceiverUseCase;
 import core.usecase.GameInitializer;
 import core.usecase.LocalMoveReceiverUseCase;
 import models.GameState;
+import models.RegistrationServer;
 import ports.ServerLobbyHandler;
 import ports.in.AlcatrazGUIReceiver;
 import ports.out.ClientMover;
@@ -17,24 +18,28 @@ import core.view.WelcomeWindow;
 
 import java.io.IOException;
 import java.security.Policy;
+import java.util.ArrayList;
 
 public class Client {
-    private static final String[] servers = {"192.168.178.52:9876", "dsiars01.westeurope.cloudapp.azure.com:9876", "dsiars02.westeurope.cloudapp.azure.com:9876", "dsiars03.westeurope.cloudapp.azure.com:9876"};
 
     public static void main(String[] args) throws IOException {
 
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
-        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
+        ArrayList<RegistrationServer> servers = new ArrayList<>();
+        servers.add(new RegistrationServer("192.168.178.52", 9876));
+        servers.add(new RegistrationServer("dsiars01.westeurope.cloudapp.azure.com", 9876));
+        servers.add(new RegistrationServer("dsiars02.westeurope.cloudapp.azure.com", 9876));
+        servers.add(new RegistrationServer("dsiars03.westeurope.cloudapp.azure.com", 9876));
 
-        GameInitializer gameInitializer = new GameInitializer(servers, serverLobbyHandler);
+        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter("RegistrationServer", servers);
+
+        GameInitializer gameInitializer = new GameInitializer(serverLobbyHandler);
 
         AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(gameInitializer);
         AlcatrazGUIReceiverAdapter guiReceiverAdapter = new AlcatrazGUIReceiverAdapter(alcatrazGUIReceiver);
 
-
-
-        WelcomeWindow welcomeWindow = new WelcomeWindow(guiReceiverAdapter);
+        new WelcomeWindow(guiReceiverAdapter);
 
         // TODO wait for keyboard input
 

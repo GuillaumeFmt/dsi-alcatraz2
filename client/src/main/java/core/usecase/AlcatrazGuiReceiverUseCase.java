@@ -20,20 +20,12 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
     @Override
     public void createUser(String userName, int port) {
         log.info("Username: {}, Port: {}", userName, port);
-        try {
-            gameInitializer.registerUser(userName, port);// register user on server
-        } catch (ClientNotReachableException e) {
-            System.exit(0);
-        }
+        gameInitializer.registerUser(userName, port);// register user on server
     }
 
     @Override
     public Lobby createLobby(String lobbyName) {
-        try {
-            gameInitializer.createLobby(lobbyName);
-        } catch (ClientNotReachableException e) {
-            e.printStackTrace();
-        }
+        gameInitializer.createLobby(lobbyName);
         return null;
     }
 
@@ -49,11 +41,6 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
 
     @Override
     public List<Lobby> getLobbies() {
-        try {
-            return gameInitializer.getCurrentLobbies();
-        } catch (ClientNotReachableException e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        return gameInitializer.getCurrentLobbies();
     }
 }

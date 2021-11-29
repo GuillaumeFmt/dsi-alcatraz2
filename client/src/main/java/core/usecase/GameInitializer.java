@@ -11,6 +11,8 @@ import ports.ServerLobbyHandler;
 import ports.in.RemoteMoveReceiver;
 import utils.RetryOnExceptionHandler;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -23,73 +25,64 @@ public class GameInitializer {
     private final ServerLobbyHandler serverLobbyHandler;
     private ClientPlayer myClientPlayer;
     private Registry registry;
-    private String[] servers;
-    private RetryOnExceptionHandler retryOnExceptionHandler;
 
-    public GameInitializer(String[] servers, ServerLobbyHandler serverLobbyHandler) {
-        this.retryOnExceptionHandler = new RetryOnExceptionHandler(3, 2000);
-        this.servers = servers;
+    public GameInitializer(ServerLobbyHandler serverLobbyHandler) {
         this.serverLobbyHandler = serverLobbyHandler;
         try {
             this.registry = LocateRegistry.createRegistry(9875);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
-
-
-    public void registerUser(String playerName, int port) throws ClientNotReachableException {
+    public void registerUser(String playerName, int port) {
+        //get local ip
+        InetAddress myIPAddress;
+        try {
+            myIPAddress = InetAddress.getLocalHost();
+            log.info("My IP address is {}", myIPAddress.getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         myClientPlayer = new ClientPlayer("  ",port,playerName);
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
         UUID id = null;
 
-        while(true) {
-            try {
-                id = serverLobbyHandler.register(myClientPlayer);
-                log.info("My Player UUID: {}", id);
-                break;
-            } catch (ServerNotPrimaryException e) {
-                log.info("Retrying another server");
-                this.retryOnExceptionHandler.exceptionOccurred();
-                continue;
-            }
+        try {
+            id = serverLobbyHandler.register(myClientPlayer);
+
+        } catch (ClientNotReachableException e) {
+            e.printStackTrace();
         }
+        log.info("My Player UUID: {}", id);
+
 
     }
 
-    public void createLobby(String lobbyName) throws ClientNotReachableException {
+    public void createLobby(String lobbyName) {
         UUID id = null;
 
-        while(true) {
             try {
                 id = serverLobbyHandler.createLobby(lobbyName, myClientPlayer);
                 log.info("My Lobbyy UUID: {}", id);
-                break;
-            } catch (ServerNotPrimaryException e) {
-                log.info("Retrying another server");
-                this.retryOnExceptionHandler.exceptionOccurred();
+
+            } catch (ClientNotReachableException e) {
+                e.printStackTrace();
             }
-        }
 
     }
 
-    public List<Lobby> getCurrentLobbies() throws ClientNotReachableException {
-        while(true) {
-            try {
-                return serverLobbyHandler.currentLobbies();
-            } catch (ServerNotPrimaryException e) {
-                log.info("Retrying another server");
-                this.retryOnExceptionHandler.exceptionOccurred();
-            }
+    public List<Lobby> getCurrentLobbies() {
+        try {
+            return serverLobbyHandler.currentLobbies();
+        } catch (ClientNotReachableException e) {
+            e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
-    public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ClientNotReachableException {
+    public void joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
         List<ClientPlayer> currentPlayersInLobby = null;
-        while (true){
             try {
                 currentPlayersInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
                 if (!currentPlayersInLobby.isEmpty()) {
@@ -101,25 +94,21 @@ public class GameInitializer {
                                     player.getPort())
                     );
                 }
-                break;
-            } catch (ServerNotPrimaryException e) {
+            } catch (ClientNotReachableException e) {
                 log.info("Retrying another server");
-                this.retryOnExceptionHandler.exceptionOccurred();
             }
-        }
     }
 
-    public void leaveLobby(ClientPlayer clientPlayer) throws ClientNotReachableException {
-        while(true){
+    public void leaveLobby(ClientPlayer clientPlayer) {
+
             try {
                 if (Boolean.TRUE.equals(serverLobbyHandler.leaveLobby(clientPlayer))) {
                     log.info("Player {} left current lobby!", clientPlayer);
                 }
-            } catch (ServerNotPrimaryException e) {
+            } catch (ClientNotReachableException e) {
                 log.info("Retrying another server");
-                this.retryOnExceptionHandler.exceptionOccurred();
+
             }
-        }
     }
 
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
@@ -127,11 +116,8 @@ public class GameInitializer {
             ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), myClientPlayer.getPort());
             registry.rebind(myClientPlayer.getPlayerName(), clientMoverRMIStub);
             //Naming.rebind("rmi://" + hostname + ":"+ port +"/".concat(myClientPlayer.getPlayerName()), clientMoverRMIStub);
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
-
-
 }

@@ -24,9 +24,9 @@ public class TestClient {
 
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
-        ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
+        //ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter(9876, "Server");
 
-        GameInitializer gameInitializer = new GameInitializer(servers, serverLobbyHandler);
+        //GameInitializer gameInitializer = new GameInitializer(servers, serverLobbyHandler);
         //gameInitializer.init("Client 2", 9872);
 
         //List<Lobby> currentLobbies = gameInitializer.getCurrentLobbies();
