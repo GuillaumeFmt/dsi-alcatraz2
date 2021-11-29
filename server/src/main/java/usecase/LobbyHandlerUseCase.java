@@ -24,14 +24,37 @@ public class LobbyHandlerUseCase implements LobbyHandler {
             throw new RemoteException("Cant handle request, I'm not primary Server.");
         }
 
-        // TODO: implement logic to check if the client is already in a lobby (currently a client can create multible lobbies and joins every lobby he/she creates)
+        ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
+        UUID lobbyID = null;
+        Boolean isInLobby = false;
+        Lobby lobby = null;
+        String clientPlayerInLobby = null;
+        try {
+            for (Lobby currentLobby : currentLobbies) {
+                for(ClientPlayer c : currentLobby.getLobbyParticipants()){
+                    if(c.getPlayerName().equals(clientPlayer.getPlayerName())){
+                        isInLobby=true;
+                        clientPlayerInLobby = currentLobby.getLobbyName();
+                        throw new Exception("User already in Lobby - in forloop");
+                    }
+                }
+            }
+            if(!isInLobby){
+                lobby = new Lobby(lobbyName, clientPlayer);
+                ArrayList<Lobby> lobbyList = LocalServerState.getInstance().getLobbyList();
+                lobbyList.add(lobby);
+                LocalServerState.getInstance().setLobbyList(lobbyList);
+                ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
+                lobbyID = lobby.getLobbyId();
+            }else {
+                throw new Exception("User already in a Lobby!");
+            }
+        } catch (Exception e) {
+            log.error("Player already in lobby {} ! - Exception: {}", clientPlayerInLobby , e.getMessage());
+        }
 
-        Lobby lobby = new Lobby(lobbyName, clientPlayer);
-        ArrayList<Lobby> lobbyList = LocalServerState.getInstance().getLobbyList();
-        lobbyList.add(lobby);
-        LocalServerState.getInstance().setLobbyList(lobbyList);
-        ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
-        return lobby.getLobbyId();
+        // TODO: implement logic to check if the client is already in a lobby (currently a client can create multible lobbies and joins every lobby he/she creates
+        return lobbyID;
     }
 
     @Override
