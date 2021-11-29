@@ -33,13 +33,19 @@ public class GameInitializer {
         this.retryOnExceptionHandler = new RetryOnExceptionHandler(3, 2000);
         this.servers = servers;
         this.serverLobbyHandler = serverLobbyHandler;
+        try {
+            this.registry = LocateRegistry.createRegistry(9875);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
+
+
 
     public void registerUser(String playerName, int port) throws ClientNotReachableException {
         myClientPlayer = new ClientPlayer("  ",port,playerName);
-
-        rebindServer();
-
+        registerClientMoverStub(new RemoteMoveReceiverUseCase());
         UUID id = null;
 
         while(true) {
@@ -49,12 +55,11 @@ public class GameInitializer {
                 break;
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
-                rebindServer();
-
                 this.retryOnExceptionHandler.exceptionOccurred();
                 continue;
             }
         }
+
     }
 
     public void createLobby(String lobbyName) throws ClientNotReachableException {
@@ -67,8 +72,6 @@ public class GameInitializer {
                 break;
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
-                rebindServer();
-
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
@@ -81,8 +84,6 @@ public class GameInitializer {
                 return serverLobbyHandler.currentLobbies();
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
-                rebindServer();
-
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
             return Collections.emptyList();
@@ -106,8 +107,6 @@ public class GameInitializer {
                 break;
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
-                rebindServer();
-
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
@@ -121,14 +120,12 @@ public class GameInitializer {
                 }
             } catch (ServerNotPrimaryException e) {
                 log.info("Retrying another server");
-                rebindServer();
-
                 this.retryOnExceptionHandler.exceptionOccurred();
             }
         }
     }
 
-    private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver, String hostname, int port) {
+    private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
         try {
             ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), myClientPlayer.getPort());
             registry.rebind(myClientPlayer.getPlayerName(), clientMoverRMIStub);
@@ -139,37 +136,5 @@ public class GameInitializer {
         }
     }
 
-    private void rebindServer(){
-        Iterator<String> iterator = Arrays.asList(servers).iterator();
 
-        do{
-            String serverPort = iterator.next();
-
-            String server = serverPort.split(":")[0];
-            int port = Integer.parseInt(serverPort.split(":")[1]);
-
-            log.info("Trying to bind to new server {} on port {}", server, port);
-
-            try {
-                getRegistry(server, port);
-            } catch (ClientNotReachableException e) {
-                log.error(e.getMessage());
-                System.exit(0);
-            }
-        }
-        while(iterator.hasNext());
-    }
-
-    private boolean getRegistry(String hostname, int port) throws ClientNotReachableException {
-        try {
-            this.registry = LocateRegistry.getRegistry(hostname, port);
-            registerClientMoverStub(new RemoteMoveReceiverUseCase(), hostname, port);
-
-        } catch (RemoteException e) {
-            log.error("Failed to connect to server {}", e.getMessage());
-            this.retryOnExceptionHandler.exceptionOccurred();
-            return true;
-        }
-        return false;
-    }
 }

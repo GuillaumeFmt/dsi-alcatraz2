@@ -24,7 +24,6 @@ public class LobbyWindow extends JFrame{
     private JTextPane textPane;
 
     private ClientPlayer clientPlayer;
-    private AlcatrazGUIReceiverAdapter guiReceiverAdapter;
 
     private DefaultTableModel tableModel;
 
@@ -45,15 +44,14 @@ public class LobbyWindow extends JFrame{
         setSize(500,500);
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        createTable();
+        createTable(guiReceiverAdapter);
         add(mainPanel);
         this.clientPlayer = clientPLayer;
-        this.guiReceiverAdapter = guiReceiverAdapter;
-        addListeners();
+        addListeners(guiReceiverAdapter);
         this.addRowController = new AddRowController(this);
         setVisible(true);
     }
-    public void createTable()
+    public void createTable(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         tableModel = new DefaultTableModel(
                 null,
@@ -77,7 +75,7 @@ public class LobbyWindow extends JFrame{
             log.error("No lobbies available, exception: " + e.getMessage());
         }
     }
-    public void addListeners()
+    public void addListeners(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         createLobbyButton.addActionListener(new CreateLobbyButtonController(this, guiReceiverAdapter));
         joinLobbyButton.addActionListener(new JoinLobbyButtonController(this));

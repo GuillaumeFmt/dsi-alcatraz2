@@ -33,6 +33,6 @@ public class CreateLobbyButtonController implements ActionListener
         // TODO: implement logic to create new lobby and get new lobby list for the UI
         //lobbyWindow.getAddRowController().addRow(lobby.getLobbyId(), lobby.getLobbyName(), lobbyName,clientPlayer.getPlayerName(), lobby.getLobbyParticipants().size(), lobby.isStarted());
         guiReceiverAdapter.createLobby(lobbyName);
-        lobbyWindow.createTable();
+        lobbyWindow.createTable(guiReceiverAdapter);
     }
 }
