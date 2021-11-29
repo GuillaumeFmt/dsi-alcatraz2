@@ -1,4 +1,4 @@
-package core.adapters.in;
+package adapters.in;
 
 import at.falb.games.alcatraz.api.Alcatraz;
 import at.falb.games.alcatraz.api.MoveListener;

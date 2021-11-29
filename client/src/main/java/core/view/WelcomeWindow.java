@@ -1,6 +1,6 @@
 package core.view;
 
-import core.adapters.in.AlcatrazGUIReceiverAdapter;
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import core.view.controller.SaveButtonController;
 
 import javax.swing.*;
@@ -11,6 +11,7 @@ public class WelcomeWindow extends JFrame
 {
     private JLabel nameText;
     private JTextField playerName;
+    private JTextField playerPort;
     private JButton saveButton;
     private JButton exitButton;
     private JPanel mainPanel;
@@ -44,8 +45,16 @@ public class WelcomeWindow extends JFrame
         return playerName;
     }
 
+    public JTextField getPlayerPort() {
+        return playerPort;
+    }
+
     public void setPlayerName(JTextField playerName) {
         this.playerName = playerName;
+    }
+
+    public void setPlayerPort(JTextField playerPort) {
+        this.playerPort = playerPort;
     }
 
     public JButton getSaveButton() {

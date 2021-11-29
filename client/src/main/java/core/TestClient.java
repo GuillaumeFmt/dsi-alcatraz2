@@ -1,13 +1,10 @@
 package core;
 
-import core.adapters.out.ServerLobbyHandlerRMIAdapter;
-import core.adapters.in.AlcatrazGameAdapter;
-import core.adapters.out.ClientMoverRMIAdapter;
-import core.usecase.GameInitializer;
+import adapters.in.AlcatrazGameAdapter;
+import adapters.out.ClientMoverRMIAdapter;
 import core.usecase.LocalMoveReceiverUseCase;
 import lombok.extern.slf4j.Slf4j;
 import models.GameState;
-import ports.ServerLobbyHandler;
 import ports.in.LocalMoveReceiver;
 import ports.out.ClientMover;
 import security.AlcatrazSecurityPolicy;

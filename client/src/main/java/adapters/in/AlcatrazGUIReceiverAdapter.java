@@ -1,4 +1,4 @@
-package core.adapters.in;
+package adapters.in;
 
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;

@@ -1,6 +1,6 @@
 package core.view.controller;
 
-import core.adapters.in.AlcatrazGUIReceiverAdapter;
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import models.ClientPlayer;
 import core.view.LobbyWindow;
 

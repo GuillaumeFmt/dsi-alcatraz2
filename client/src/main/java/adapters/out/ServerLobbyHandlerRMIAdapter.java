@@ -1,4 +1,4 @@
-package core.adapters.out;
+package adapters.out;
 
 import adapters.ServerLobbyHandlerRMI;
 import exceptions.ClientNotReachableException;

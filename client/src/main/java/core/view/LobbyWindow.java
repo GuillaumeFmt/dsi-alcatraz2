@@ -1,6 +1,6 @@
 package core.view;
 
-import core.adapters.in.AlcatrazGUIReceiverAdapter;
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import core.view.controller.*;

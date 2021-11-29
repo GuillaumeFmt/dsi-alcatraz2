@@ -1,6 +1,6 @@
 package core.view.controller;
 
-import core.adapters.in.AlcatrazGUIReceiverAdapter;
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import models.ClientPlayer;
 import core.view.LobbyWindow;
 import core.view.WelcomeWindow;
@@ -16,6 +16,7 @@ public class SaveButtonController implements ActionListener
 
     private WelcomeWindow welcomeWindow;
     private String userName;
+    private int userPort;
     private ClientPlayer clientPlayer;
     private AlcatrazGUIReceiverAdapter guiReceiverAdapter;
 
@@ -30,9 +31,10 @@ public class SaveButtonController implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         userName = welcomeWindow.getPlayerName().getText();
+        userPort = Integer.parseInt(welcomeWindow.getPlayerPort().getText());
         //System.out.println("getplayername: "+userName);
-        clientPlayer = new ClientPlayer("",533,userName);
-        guiReceiverAdapter.createUser(userName, 9871);
+        clientPlayer = new ClientPlayer("",533, userName);
+        guiReceiverAdapter.createUser(userName, userPort);
         System.out.println("getplayer name client "+clientPlayer.getPlayerName());
         LobbyWindow lobby = new LobbyWindow(clientPlayer, guiReceiverAdapter);
         lobby.setName(userName);
