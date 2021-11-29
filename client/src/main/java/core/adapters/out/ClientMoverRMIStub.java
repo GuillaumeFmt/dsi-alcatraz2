@@ -1,4 +1,4 @@
-package adapters.out;
+package core.adapters.out;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

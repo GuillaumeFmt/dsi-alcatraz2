@@ -1,5 +1,6 @@
-package adapters;
+package adapters.in;
 
+import adapters.ServerLobbyHandlerRMI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;

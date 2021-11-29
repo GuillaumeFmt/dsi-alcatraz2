@@ -1,5 +1,6 @@
-package adapters;
+package core.adapters.in;
 
+import adapters.ClientLobbyHandlerRMI;
 import models.ClientPlayer;
 
 import java.rmi.RemoteException;

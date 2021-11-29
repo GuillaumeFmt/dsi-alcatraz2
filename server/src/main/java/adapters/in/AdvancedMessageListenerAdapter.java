@@ -1,4 +1,4 @@
-package adapters;
+package adapters.in;
 
 import core.*;
 import model.LocalServerState;

@@ -1,4 +1,4 @@
-package adapters.out;
+package core.adapters.out;
 
 import exceptions.ClientNotReachableException;
 import models.ClientMove;

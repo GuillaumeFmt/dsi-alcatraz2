@@ -1,6 +1,6 @@
 package core.view;
 
-import adapters.in.AlcatrazGUIReceiverAdapter;
+import core.adapters.in.AlcatrazGUIReceiverAdapter;
 import core.view.controller.SaveButtonController;
 
 import javax.swing.*;

@@ -1,6 +1,6 @@
 package core;
 
-import adapters.AdvancedMessageListenerAdapter;
+import adapters.in.AdvancedMessageListenerAdapter;
 import model.LocalServerState;
 import model.SpreadGroupState;
 import spread.SpreadConnection;

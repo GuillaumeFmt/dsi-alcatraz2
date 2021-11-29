@@ -1,7 +1,7 @@
 package core;
 
 import adapters.ServerLobbyHandlerRMI;
-import adapters.ServerLobbyHandlerRMIStub;
+import adapters.in.ServerLobbyHandlerRMIStub;
 import usecase.LobbyHandlerUseCase;
 import usecase.RegistrationUseCase;
 import ports.in.LobbyHandler;

@@ -1,13 +1,12 @@
 package core;
 
-import adapters.ServerLobbyHandlerRMIAdapter;
-import adapters.in.AlcatrazGUIReceiverAdapter;
-import adapters.in.AlcatrazGameAdapter;
-import adapters.out.ClientMoverRMIAdapter;
+import core.adapters.out.ServerLobbyHandlerRMIAdapter;
+import core.adapters.in.AlcatrazGUIReceiverAdapter;
+import core.adapters.in.AlcatrazGameAdapter;
+import core.adapters.out.ClientMoverRMIAdapter;
 import core.usecase.AlcatrazGuiReceiverUseCase;
 import core.usecase.GameInitializer;
 import core.usecase.LocalMoveReceiverUseCase;
-import models.ClientPlayer;
 import models.GameState;
 import ports.ServerLobbyHandler;
 import ports.in.AlcatrazGUIReceiver;

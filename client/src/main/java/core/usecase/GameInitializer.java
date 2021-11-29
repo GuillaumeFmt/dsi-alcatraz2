@@ -1,7 +1,7 @@
 package core.usecase;
 
-import adapters.out.ClientMoverRMI;
-import adapters.out.ClientMoverRMIStub;
+import core.adapters.out.ClientMoverRMI;
+import core.adapters.out.ClientMoverRMIStub;
 import exceptions.ClientNotReachableException;
 import exceptions.ServerNotPrimaryException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +11,6 @@ import ports.ServerLobbyHandler;
 import ports.in.RemoteMoveReceiver;
 import utils.RetryOnExceptionHandler;
 
-import java.net.ConnectException;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

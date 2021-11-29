@@ -1,5 +1,6 @@
-package adapters;
+package core.adapters.out;
 
+import adapters.ServerLobbyHandlerRMI;
 import exceptions.ServerNotPrimaryException;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;

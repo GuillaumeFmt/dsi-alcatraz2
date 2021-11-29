@@ -1,4 +1,4 @@
-package adapters;
+package adapters.out;
 
 import models.ClientPlayer;
 import ports.ClientLobbyHandler;
