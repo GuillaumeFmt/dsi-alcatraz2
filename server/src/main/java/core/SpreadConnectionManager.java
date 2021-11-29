@@ -35,7 +35,6 @@ public class SpreadConnectionManager {
             throw new RuntimeException();
         }
         LocalServerState.getInstance().setMyServerName(spreadConnection.getPrivateGroup().toString());
-        SpreadGroupState.myGroup = spreadConnection.getPrivateGroup();  // TODO: check if this line can be deleted
         System.out.println("Connection established with spread daemon on default localhost:4803");
         System.out.printf("My name is %s%n", spreadConnection.getPrivateGroup());
         System.out.printf("Trying to join group %s%n", this.groupName);

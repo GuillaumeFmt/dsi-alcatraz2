@@ -54,7 +54,6 @@ public class Client {
         AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(serverLobbyHandler);
         AlcatrazGUIReceiverAdapter guiReceiverAdapter = new AlcatrazGUIReceiverAdapter(alcatrazGUIReceiver);
 
-
         new WelcomeWindow(guiReceiverAdapter);
         // TODO wait for keyboard input
 

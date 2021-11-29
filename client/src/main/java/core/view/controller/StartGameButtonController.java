@@ -1,5 +1,6 @@
 package core.view.controller;
 
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import models.ClientPlayer;
 import core.view.LobbyWindow;
 
@@ -13,7 +14,7 @@ public class StartGameButtonController implements ActionListener
     private LobbyWindow lobbyWindow;
     private ClientPlayer clientPlayer;
 
-    public StartGameButtonController(LobbyWindow lobbyWindow)
+    public StartGameButtonController(LobbyWindow lobbyWindow, AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         this.lobbyWindow = lobbyWindow;
         clientPlayer = lobbyWindow.getClientPlayer();

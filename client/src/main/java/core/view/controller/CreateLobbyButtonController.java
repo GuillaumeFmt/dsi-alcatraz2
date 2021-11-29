@@ -34,5 +34,6 @@ public class CreateLobbyButtonController implements ActionListener
         //lobbyWindow.getAddRowController().addRow(lobby.getLobbyId(), lobby.getLobbyName(), lobbyName,clientPlayer.getPlayerName(), lobby.getLobbyParticipants().size(), lobby.isStarted());
         guiReceiverAdapter.createLobby(lobbyName);
         lobbyWindow.createTable(guiReceiverAdapter);
+        lobbyWindow.getLeaveLobbyButton().setEnabled(true);
     }
 }

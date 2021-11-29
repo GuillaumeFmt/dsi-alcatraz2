@@ -18,12 +18,13 @@ public class WelcomeWindow extends JFrame
 
 
     public WelcomeWindow(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter) {
+
         setTitle("Shawshank Redemption");
         setSize(500,500);
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        add(mainPanel);
         addActionListeners(alcatrazGUIReceiverAdapter);
+        add(mainPanel);
         setVisible(true);
     }
 

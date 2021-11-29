@@ -1,15 +1,22 @@
 package core.view;
 
 import adapters.in.AlcatrazGUIReceiverAdapter;
+import core.domain.ClientState;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import core.view.controller.*;
+import models.GameState;
+import models.Lobby;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 @Slf4j
+@Getter
+@Setter
 public class LobbyWindow extends JFrame{
     private JPanel mainPanel;
     private JPanel titlePanel;
@@ -27,6 +34,7 @@ public class LobbyWindow extends JFrame{
     private ClientPlayer clientPlayer;
 
     private DefaultTableModel tableModel;
+    private ListSelectionModel selectionModel;
 
     private String lobbyIDColumn =   "Lobby ID";
     private String lobbyNameColumn=  "LobbyName";
@@ -41,15 +49,18 @@ public class LobbyWindow extends JFrame{
 
     public LobbyWindow(ClientPlayer clientPLayer, AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
+
         super("AlcatrazLobby");
         setSize(500,500);
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addRowController = new AddRowController(this);
-        createTable(guiReceiverAdapter);
-        add(mainPanel);
         this.clientPlayer = clientPLayer;
         addListeners(guiReceiverAdapter);
+        startGameButton.setEnabled(false);
+        leaveLobbyButton.setEnabled(false);
+        add(mainPanel);
+        createTable(guiReceiverAdapter);
         setVisible(true);
     }
     public void createTable(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
@@ -59,9 +70,14 @@ public class LobbyWindow extends JFrame{
                 new String[]{lobbyIDColumn,lobbyNameColumn,lobbyOwnerColumn,participantsColumn,amountParticipantsColumn,isStartedColumn});
 
         lobbyTable.setModel(tableModel);
+        lobbyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         try {
-            guiReceiverAdapter.getLobbies().stream().forEach(lobby -> {
+            ArrayList<Lobby> lobbies = (ArrayList<Lobby>) guiReceiverAdapter.getLobbies();
+
+            ClientState.getInstance().setCurrentLobbies(lobbies);
+
+            lobbies.stream().forEach(lobby -> {
                 StringBuilder userList = new StringBuilder();
                 ArrayList<ClientPlayer> players = lobby.getLobbyParticipants();
 
@@ -84,168 +100,11 @@ public class LobbyWindow extends JFrame{
     public void addListeners(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         createLobbyButton.addActionListener(new CreateLobbyButtonController(this, guiReceiverAdapter));
-        joinLobbyButton.addActionListener(new JoinLobbyButtonController(this));
-        leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this));
-        startGameButton.addActionListener(new StartGameButtonController(this));
+        joinLobbyButton.addActionListener(new JoinLobbyButtonController(this, guiReceiverAdapter));
+        leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this, guiReceiverAdapter));
+        startGameButton.addActionListener(new StartGameButtonController(this, guiReceiverAdapter));
     }
 
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
 
-    public void setMainPanel(JPanel mainPanel) {
-        this.mainPanel = mainPanel;
-    }
 
-    public JPanel getTitlePanel() {
-        return titlePanel;
-    }
-
-    public void setTitlePanel(JPanel titlePanel) {
-        this.titlePanel = titlePanel;
-    }
-
-    public JLabel getTitleText() {
-        return titleText;
-    }
-
-    public void setTitleText(JLabel titleText) {
-        this.titleText = titleText;
-    }
-
-    public JTable getLobbyTable() {
-        return lobbyTable;
-    }
-
-    public void setLobbyTable(JTable lobbyTable) {
-        this.lobbyTable = lobbyTable;
-    }
-
-    public JPanel getLobbyPanel() {
-        return lobbyPanel;
-    }
-
-    public void setLobbyPanel(JPanel lobbyPanel) {
-        this.lobbyPanel = lobbyPanel;
-    }
-
-    public JButton getCreateLobbyButton() {
-        return createLobbyButton;
-    }
-
-    public void setCreateLobbyButton(JButton createLobbyButton) {
-        this.createLobbyButton = createLobbyButton;
-    }
-
-    public JButton getJoinLobbyButton() {
-        return joinLobbyButton;
-    }
-
-    public void setJoinLobbyButton(JButton joinLobbyButton) {
-        this.joinLobbyButton = joinLobbyButton;
-    }
-
-    public JButton getLeaveLobbyButton() {
-        return leaveLobbyButton;
-    }
-
-    public void setLeaveLobbyButton(JButton leaveLobbyButton) {
-        this.leaveLobbyButton = leaveLobbyButton;
-    }
-
-    public JButton getStartGameButton() {
-        return startGameButton;
-    }
-
-    public void setStartGameButton(JButton startGameButton) {
-        this.startGameButton = startGameButton;
-    }
-
-    public JPanel getButtonPanel() {
-        return buttonPanel;
-    }
-
-    public void setButtonPanel(JPanel buttonPanel) {
-        this.buttonPanel = buttonPanel;
-    }
-
-    public JScrollPane getScrollPane() {
-        return scrollPane;
-    }
-
-    public void setScrollPane(JScrollPane scrollPane) {
-        this.scrollPane = scrollPane;
-    }
-
-    public JTextPane getTextPane() {
-        return textPane;
-    }
-
-    public void setTextPane(JTextPane textPane) {
-        this.textPane = textPane;
-    }
-
-    public DefaultTableModel getTableModel() {
-        return tableModel;
-    }
-
-    public void setTableModel(DefaultTableModel tableModel) {
-        this.tableModel = tableModel;
-    }
-
-    public String getLobbyIDColumn() {
-        return lobbyIDColumn;
-    }
-
-    public void setLobbyIDColumn(String lobbyIDColumn) {
-        this.lobbyIDColumn = lobbyIDColumn;
-    }
-
-    public String getLobbyNameColumn() {
-        return lobbyNameColumn;
-    }
-
-    public void setLobbyNameColumn(String lobbyNameColumn) {
-        this.lobbyNameColumn = lobbyNameColumn;
-    }
-
-    public String getLobbyOwnerColumn() {
-        return lobbyOwnerColumn;
-    }
-
-    public void setLobbyOwnerColumn(String lobbyOwnerColumn) {
-        this.lobbyOwnerColumn = lobbyOwnerColumn;
-    }
-
-    public String getParticipantsColumn() {
-        return participantsColumn;
-    }
-
-    public void setParticipantsColumn(String participantsColumn) {
-        this.participantsColumn = participantsColumn;
-    }
-
-    public String getAmountParticipantsColumn() {
-        return amountParticipantsColumn;
-    }
-
-    public void setAmountParticipantsColumn(String amountParticipantsColumn) {
-        this.amountParticipantsColumn = amountParticipantsColumn;
-    }
-
-    public ClientPlayer getClientPlayer() {
-        return clientPlayer;
-    }
-
-    public AddRowController getAddRowController() {
-        return addRowController;
-    }
-
-    public String getIsStartedColumn() {
-        return isStartedColumn;
-    }
-
-    public void setIsStartedColumn(String isStartedColumn) {
-        this.isStartedColumn = isStartedColumn;
-    }
 }
