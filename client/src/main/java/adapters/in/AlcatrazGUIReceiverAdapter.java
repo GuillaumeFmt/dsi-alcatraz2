@@ -1,5 +1,8 @@
 package adapters.in;
 
+import at.falb.games.alcatraz.impl.Game;
+import core.domain.ClientState;
+import models.GameState;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;
 
@@ -24,6 +27,10 @@ public class AlcatrazGUIReceiverAdapter {
 
     public void createLobby(String lobbyName) {
         alcatrazGUIReceiver.createLobby(lobbyName);
+    }
+
+    public void joinLobby(Lobby lobby) {
+        alcatrazGUIReceiver.joinLobby(lobby, ClientState.getInstance().getLocalClientPlayer());
     }
 
     // TODO: implement the other methods...

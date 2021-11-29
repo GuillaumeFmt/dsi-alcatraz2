@@ -1,5 +1,6 @@
 package core.view.controller;
 
+import adapters.in.AlcatrazGUIReceiverAdapter;
 import models.ClientPlayer;
 import core.view.LobbyWindow;
 
@@ -14,7 +15,7 @@ public class LeaveLobbyButtonController implements ActionListener
     private LobbyWindow lobbyWindow;
     private ClientPlayer clientPlayer;
 
-    public LeaveLobbyButtonController(LobbyWindow lobbyWindow)
+    public LeaveLobbyButtonController(LobbyWindow lobbyWindow, AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         this.lobbyWindow = lobbyWindow;
         clientPlayer = lobbyWindow.getClientPlayer();

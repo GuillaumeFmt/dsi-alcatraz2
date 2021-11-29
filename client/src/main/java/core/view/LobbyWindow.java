@@ -1,9 +1,12 @@
 package core.view;
 
 import adapters.in.AlcatrazGUIReceiverAdapter;
+import core.domain.ClientState;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import core.view.controller.*;
+import models.GameState;
+import models.Lobby;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +30,7 @@ public class LobbyWindow extends JFrame{
     private ClientPlayer clientPlayer;
 
     private DefaultTableModel tableModel;
+    private ListSelectionModel selectionModel;
 
     private String lobbyIDColumn =   "Lobby ID";
     private String lobbyNameColumn=  "LobbyName";
@@ -59,9 +63,16 @@ public class LobbyWindow extends JFrame{
                 new String[]{lobbyIDColumn,lobbyNameColumn,lobbyOwnerColumn,participantsColumn,amountParticipantsColumn,isStartedColumn});
 
         lobbyTable.setModel(tableModel);
+        lobbyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+
 
         try {
-            guiReceiverAdapter.getLobbies().stream().forEach(lobby -> {
+            ArrayList<Lobby> lobbies = (ArrayList<Lobby>) guiReceiverAdapter.getLobbies();
+
+            ClientState.getInstance().setCurrentLobbies(lobbies);
+
+            lobbies.stream().forEach(lobby -> {
                 StringBuilder userList = new StringBuilder();
                 ArrayList<ClientPlayer> players = lobby.getLobbyParticipants();
 
@@ -84,9 +95,9 @@ public class LobbyWindow extends JFrame{
     public void addListeners(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
         createLobbyButton.addActionListener(new CreateLobbyButtonController(this, guiReceiverAdapter));
-        joinLobbyButton.addActionListener(new JoinLobbyButtonController(this));
-        leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this));
-        startGameButton.addActionListener(new StartGameButtonController(this));
+        joinLobbyButton.addActionListener(new JoinLobbyButtonController(this, guiReceiverAdapter));
+        leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this, guiReceiverAdapter));
+        startGameButton.addActionListener(new StartGameButtonController(this, guiReceiverAdapter));
     }
 
     public JPanel getMainPanel() {

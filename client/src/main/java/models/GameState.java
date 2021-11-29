@@ -1,6 +1,10 @@
 package models;
 
 import at.falb.games.alcatraz.api.Alcatraz;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
 
 public class GameState {
     private static GameState gameStateInstance;

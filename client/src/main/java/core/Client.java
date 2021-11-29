@@ -26,15 +26,14 @@ public class Client {
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
         ArrayList<RegistrationServer> servers = new ArrayList<>();
-//        servers.add(new RegistrationServer("192.168.178.52", 9876));
+        servers.add(new RegistrationServer("192.168.178.52", 9876));
         servers.add(new RegistrationServer("dsiars01.westeurope.cloudapp.azure.com", 9876));
-//        servers.add(new RegistrationServer("dsiars02.westeurope.cloudapp.azure.com", 9876));
-//        servers.add(new RegistrationServer("dsiars03.westeurope.cloudapp.azure.com", 9876));
+        servers.add(new RegistrationServer("dsiars02.westeurope.cloudapp.azure.com", 9876));
+        servers.add(new RegistrationServer("dsiars03.westeurope.cloudapp.azure.com", 9876));
 
         ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter("RegistrationServer", servers);
         AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(serverLobbyHandler);
         AlcatrazGUIReceiverAdapter guiReceiverAdapter = new AlcatrazGUIReceiverAdapter(alcatrazGUIReceiver);
-
 
         new WelcomeWindow(guiReceiverAdapter);
         // TODO wait for keyboard input
