@@ -28,23 +28,25 @@ public class GameInitializer {
 
     public GameInitializer(ServerLobbyHandler serverLobbyHandler) {
         this.serverLobbyHandler = serverLobbyHandler;
-        try {
-            this.registry = LocateRegistry.createRegistry(9875);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     public void registerUser(String playerName, int port) {
+        try {
+            this.registry = LocateRegistry.createRegistry(port);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         //get local ip
         InetAddress myIPAddress;
+        String iPAddress = "";
         try {
             myIPAddress = InetAddress.getLocalHost();
-            log.info("My IP address is {}", myIPAddress.getHostAddress());
+            iPAddress = myIPAddress.getHostAddress();
+            log.info("My IP address is {}", iPAddress);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        myClientPlayer = new ClientPlayer("  ",port,playerName);
+        myClientPlayer = new ClientPlayer(iPAddress,port,playerName);
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
         UUID id = null;
 
