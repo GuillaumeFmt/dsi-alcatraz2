@@ -9,7 +9,7 @@ import spread.SpreadMessage;
 
 import java.io.IOException;
 
-// TODO: remove this class!
+// TODO: remove this class! LEICHE
 
 public class ReplicationMessageListenerAdapter implements BasicMessageListener {
 

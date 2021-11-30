@@ -1,3 +1,5 @@
+import exceptions.LobbyException;
+import exceptions.ServerNotPrimaryException;
 import model.LocalServerState;
 import models.ClientPlayer;
 import models.Lobby;
@@ -66,7 +68,7 @@ class LobbyHandlerTest {
                 MockedStatic<LocalServerState> serverState = Mockito.mockStatic(LocalServerState.class);
                 MockedStatic<ReplicationHandlerUseCase> ignored = Mockito.mockStatic(ReplicationHandlerUseCase.class);
         ) {
-            Assertions.assertThrows(RemoteException.class, () -> {
+            Assertions.assertThrows(ServerNotPrimaryException.class, () -> {
                 serverState.when(LocalServerState::getInstance).thenReturn(mockServerState);
                 when(mockServerState.amIPrimary()).thenReturn(true);
                 when(mockServerState.getLobbyList()).thenReturn(lobbyList);
@@ -108,7 +110,7 @@ class LobbyHandlerTest {
     }
 
     @Test
-    void shouldLeaveLobbyAndDeleteEmptyLobby() throws RemoteException {
+    void shouldLeaveLobbyAndDeleteEmptyLobby() throws ServerNotPrimaryException {
         try (
                 MockedStatic<LocalServerState> serverState = Mockito.mockStatic(LocalServerState.class);
                 MockedStatic<ReplicationHandlerUseCase> ignored = Mockito.mockStatic(ReplicationHandlerUseCase.class);
@@ -122,7 +124,7 @@ class LobbyHandlerTest {
     }
 
     @Test
-    void shouldReturnTrueWhenTryingToLeaveBotNotInLobby() throws RemoteException {
+    void shouldReturnTrueWhenTryingToLeaveBotNotInLobby() throws RemoteException, ServerNotPrimaryException {
         try (
                 MockedStatic<LocalServerState> serverState = Mockito.mockStatic(LocalServerState.class);
                 MockedStatic<ReplicationHandlerUseCase> ignored = Mockito.mockStatic(ReplicationHandlerUseCase.class);
@@ -135,7 +137,7 @@ class LobbyHandlerTest {
     }
 
     @Test
-    void shouldLeaveLobbyAndAssignAnotherLobbyOwner() throws RemoteException {
+    void shouldLeaveLobbyAndAssignAnotherLobbyOwner() throws ServerNotPrimaryException, LobbyException {
         ClientPlayer clientPlayer = new ClientPlayer("10.0.0.2", 5431, "player4");
         try (
                 MockedStatic<LocalServerState> serverState = Mockito.mockStatic(LocalServerState.class);

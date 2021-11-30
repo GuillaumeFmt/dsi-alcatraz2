@@ -1,6 +1,7 @@
 package usecase;
 
 import exceptions.LobbyException;
+import exceptions.ServerNotPrimaryException;
 import lombok.extern.slf4j.Slf4j;
 import model.LocalServerState;
 import models.ClientPlayer;
@@ -8,6 +9,7 @@ import models.Lobby;
 import ports.in.LobbyHandler;
 
 import java.rmi.RemoteException;
+import java.rmi.server.ServerNotActiveException;
 import java.util.*;
 
 @Slf4j
@@ -16,11 +18,11 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     // TODO: implement "wait for response behaviour" (after sending spread message to the replicas, we should wait for the ok response -> blocking approach)
 
     @Override
-    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException, LobbyException {
+    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws ServerNotPrimaryException, LobbyException {
         // check if primary, otherwise throw exception and do not execute the create lobby command
         if (!LocalServerState.getInstance().amIPrimary()) {
             log.info("createLobby Request not executed, I'm not primary Server.");
-            throw new RemoteException("Cant handle request, I'm not primary Server.");
+            throw new ServerNotPrimaryException("Cant handle request, I'm not primary Server.");
         }
 
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
@@ -42,17 +44,17 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     }
 
     @Override
-    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException {
+    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ServerNotPrimaryException, LobbyException {
         // check if primary, otherwise throw exception and do not execute the join lobby command
         if (!LocalServerState.getInstance().amIPrimary()) {
-            throw new RemoteException("Cant handle request, I'm not primary Server.");
+            throw new ServerNotPrimaryException("Cant handle request, I'm not primary Server.");
         }
 
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
         Lobby lobbyToJoin = currentLobbies.stream().filter(searchLobby -> searchLobby.getLobbyId().compareTo(lobby.getLobbyId()) == 0)
                 .findFirst().orElseThrow(() -> {
                     log.error("Could not add player to lobby, lobby not found! {}", lobby);
-                    return new RemoteException("Could not add player to lobby, lobby not found!");
+                    return new LobbyException("Could not add player to lobby, lobby not found!");
                 });
 
         if (checkPlayerNotInAnyLobby(clientPlayer)) {
@@ -60,21 +62,21 @@ public class LobbyHandlerUseCase implements LobbyHandler {
             ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
         } else {
             log.error("Could not add player to lobby, player {} already in another lobby", clientPlayer);
-            throw new RemoteException("Could not add player to lobby, lobby not found!");
+            throw new LobbyException("Could not add player to lobby, lobby not found!");
         }
 
         return LocalServerState.getInstance().getLobbyList().stream()
                 .filter(searchLobby -> searchLobby.getLobbyId().compareTo(lobby.getLobbyId()) == 0)
                 .findFirst().orElseThrow(() -> {
                     log.error("Could not add player to lobby, lobby not found! {}", lobby);
-                    return new RemoteException("Could not add player to lobby, lobby not found!");
+                    return new LobbyException("Could not add player to lobby, lobby not found!");
                 }).getLobbyParticipants();
     }
 
     @Override
-    public boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException {
+    public boolean leaveLobby(String playerName, UUID lobbyId) throws ServerNotPrimaryException {
         if (!LocalServerState.getInstance().amIPrimary()) {
-            throw new RemoteException("Cant handle request, I'm not primary Server.");
+            throw new ServerNotPrimaryException("Cant handle request, I'm not primary Server.");
         }
 
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();

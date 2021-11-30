@@ -1,7 +1,7 @@
 package exceptions;
 
 public class ServerNotPrimaryException extends Exception{
-    public ServerNotPrimaryException(){
-        super();
+    public ServerNotPrimaryException(String s){
+        super(s);
     }
 }
