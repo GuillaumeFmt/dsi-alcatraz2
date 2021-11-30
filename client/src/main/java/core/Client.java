@@ -61,12 +61,7 @@ public class Client {
         System.in.read();
 
 
-        ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2");
-        // clientMover is "Client 2" in this case
 
-        LocalMoveReceiver localMoveReceiver = new LocalMoveReceiverUseCase(clientMover);
-
-        var alcatrazGame = new AlcatrazGameAdapter(localMoveReceiver, 0, GameState.getGameStateInstance());
 
         while (true) {
 

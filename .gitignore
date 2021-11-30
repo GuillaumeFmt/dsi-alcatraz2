@@ -5,3 +5,4 @@
 /client/dependency-reduced-pom.xml
 /common/dependency-reduced-pom.xml
 /spread_src/windows/spread-bin-4.4.0-Windows8_x64/bin/win32/spread.conf
+/spread_src/linux/spread-bin-4.0.0/bin/i686-pc-linux-gnu/spread.conf
