@@ -4,6 +4,7 @@ import adapters.ServerLobbyHandlerRMI;
 import exceptions.ClientNotReachableException;
 import exceptions.LobbyException;
 import exceptions.ServerNotPrimaryException;
+import exceptions.StartGameException;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
@@ -15,7 +16,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.ServerNotActiveException;
 import java.util.*;
 
 @Slf4j
@@ -44,6 +44,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
         if (!this.serverPointer.hasNext()) {
             this.serverPointer = servers.iterator();
         }
+
         RegistrationServer registrationServer = this.serverPointer.next();
         log.info("Trying to connect to {} on port {}", registrationServer.getHostname(), registrationServer.getPort());
         try {
@@ -72,7 +73,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
         while (true) {
             try {
                 return serverLobbyHandlerProxy.register(clientPlayer);
-            } catch (RemoteException e) {
+            } catch (RemoteException | ServerNotPrimaryException e) {
                 log.error("Caught exception {} while trying to register player", e.toString());
                 e.printStackTrace();
                 reInit();
@@ -130,7 +131,6 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
                 reInit();
             }
         }
-        //return List.of(new ClientPlayer("127.0.0.1", 9871, "Client 1"), new ClientPlayer("127.0.0.1", 9872, "Client 2"));
     }
 
     @Override
@@ -149,12 +149,14 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     }
 
     @Override
-    public Boolean startGame(Lobby lobby) {
+    public Boolean startGame(UUID lobbyId) throws StartGameException {
         try {
-            return serverLobbyHandlerProxy.startGame(lobby);
+            return serverLobbyHandlerProxy.startGame(lobbyId);
         } catch (RemoteException e) {
             log.info("Got remote exception while trying to start game {}", e.getMessage());
             reInit();
+        } catch (LobbyException e) {
+            log.error("Could not start game", e.getMessage());
         }
         return false;
     }
