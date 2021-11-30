@@ -8,5 +8,5 @@ public interface ClientLobbyHandler {
 
     boolean isAlive() throws RemoteException;
 
-    boolean initGame(List<ClientPlayer> clientPlayerList) throws RemoteException;
+    boolean initGame(List<ClientPlayer> clientPlayers) throws RemoteException;
 }

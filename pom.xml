@@ -14,18 +14,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>server</module>
-        <module>common</module>
-        <module>client</module>
         <module>local-repo</module>
+        <module>common</module>
+        <module>server</module>
+        <module>client</module>
     </modules>
-
-    <repositories>
-            <repository>
-                <id>local-repo</id>
-                <url>${project.basedir}/local-maven-repo</url>
-            </repository>
-    </repositories>
 
     <dependencies>
         <dependency>

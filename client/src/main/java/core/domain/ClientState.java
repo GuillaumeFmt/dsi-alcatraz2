@@ -22,6 +22,7 @@ public class ClientState {
 
     @Getter @Setter private ArrayList<Lobby> currentLobbies;
     @Getter @Setter private String userName;
+    @Getter @Setter private int playerIdxForGame;
 
     private ClientState() {
         // defeat instantiation

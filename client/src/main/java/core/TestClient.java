@@ -38,13 +38,13 @@ public class TestClient {
         */
 
         // TODO wait for keyboard input
-        System.in.read();
+        /*System.in.read();
 
         ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 1");
 
         LocalMoveReceiver localMoveReceiver = new LocalMoveReceiverUseCase(clientMover);
 
-        var alcatrazGame = new AlcatrazGameAdapter(localMoveReceiver, 1, GameState.getGameStateInstance());
+        var alcatrazGame = new AlcatrazGameAdapter(localMoveReceiver, 1, GameState.getGameStateInstance());*/
 
         while (true) {
 

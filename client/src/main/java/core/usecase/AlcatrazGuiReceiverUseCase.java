@@ -1,13 +1,17 @@
 package core.usecase;
 
+import adapters.ClientLobbyHandlerRMI;
+import adapters.in.ClientLobbyHandlerRMIStub;
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
+import core.Client;
 import core.domain.ClientState;
 import exceptions.ClientNotReachableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
+import ports.ClientLobbyHandler;
 import ports.ServerLobbyHandler;
 import ports.in.AlcatrazGUIReceiver;
 import ports.in.RemoteMoveReceiver;
@@ -35,6 +39,7 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        //TODO: InetAddress gives back IP address of any of your local NICs. But we need to get one for the server reachable IP address
         //get local ip
         InetAddress myIPAddress;
         String iPAddress = "";
@@ -47,7 +52,7 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
         }
         ClientState.getInstance().setLocalClientPlayer(new ClientPlayer(iPAddress, port, userName));
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
-
+        registerClientLobbyHandlerStub(new ClientLobbyHandlerUseCase());
         try {
             UUID id = serverLobbyHandler.register(ClientState.getInstance().getLocalClientPlayer());
             log.info("My Player UUID: {}", id);
@@ -117,6 +122,16 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
             ClientMoverRMI clientMoverRMIStub = (ClientMoverRMI) UnicastRemoteObject.exportObject(new ClientMoverRMIStub(remoteMoveReceiver), ClientState.getInstance().getLocalClientPlayer().getPort());
             ClientState.getInstance().getRegistry().rebind(ClientState.getInstance().getLocalClientPlayer().getPlayerName(), clientMoverRMIStub);
             //Naming.rebind("rmi://" + hostname + ":"+ port +"/".concat(myClientPlayer.getPlayerName()), clientMoverRMIStub);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void registerClientLobbyHandlerStub(ClientLobbyHandlerUseCase clientLobbyHandlerUseCase){
+        try {
+            ClientLobbyHandlerRMI clientLobbyHandlerRMIStub = (ClientLobbyHandlerRMI) UnicastRemoteObject.exportObject(new ClientLobbyHandlerRMIStub(clientLobbyHandlerUseCase), ClientState.getInstance().getLocalClientPlayer().getPort());
+            //TODO: find a better way to name the remote object, so that server does not need to concat hardcoded
+            ClientState.getInstance().getRegistry().rebind(ClientState.getInstance().getLocalClientPlayer().getPlayerName().concat("Server"), clientLobbyHandlerRMIStub);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -1,21 +1,25 @@
 package adapters.in;
 
 import adapters.ClientLobbyHandlerRMI;
+import core.usecase.ClientLobbyHandlerUseCase;
+import lombok.RequiredArgsConstructor;
 import models.ClientPlayer;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class ClientLobbyHandlerRMIStub implements ClientLobbyHandlerRMI {
+
+    public final ClientLobbyHandlerUseCase clientLobbyHandlerUseCase;
+
     @Override
     public boolean isAlive() throws RemoteException {
-        // when client is reachable, which is the case when this method can be called simply return true
-        return true;
+        return clientLobbyHandlerUseCase.isAlive();
     }
 
     @Override
     public boolean initGame(List<ClientPlayer> clientPlayerList) throws RemoteException {
-        // TODO : start the game locally and initialize communication with participants
-        return false;
+        return clientLobbyHandlerUseCase.initGame(clientPlayerList);
     }
 }
