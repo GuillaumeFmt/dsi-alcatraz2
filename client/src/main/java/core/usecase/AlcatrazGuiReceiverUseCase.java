@@ -92,7 +92,7 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
     @Override
     public Boolean leaveLobby(UUID lobbyId) {
         try {
-            if (Boolean.TRUE.equals(serverLobbyHandler.leaveLobby(ClientState.getInstance().getLocalClientPlayer()))) {
+            if (serverLobbyHandler.leaveLobby(ClientState.getInstance().getLocalClientPlayer().getPlayerName(), lobbyId)) {
                 log.info("Player {} left current lobby!", ClientState.getInstance().getLocalClientPlayer());
                 return true;
             }

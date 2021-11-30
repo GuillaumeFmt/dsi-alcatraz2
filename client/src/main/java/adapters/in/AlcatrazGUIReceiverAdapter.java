@@ -1,12 +1,9 @@
 package adapters.in;
 
-import at.falb.games.alcatraz.impl.Game;
 import core.domain.ClientState;
-import models.GameState;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

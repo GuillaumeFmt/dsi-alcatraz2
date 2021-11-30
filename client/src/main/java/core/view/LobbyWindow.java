@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import core.view.controller.*;
-import models.GameState;
 import models.Lobby;
 
 import javax.swing.*;
@@ -77,7 +76,7 @@ public class LobbyWindow extends JFrame{
 
             ClientState.getInstance().setCurrentLobbies(lobbies);
 
-            lobbies.stream().forEach(lobby -> {
+            lobbies.forEach(lobby -> {
                 StringBuilder userList = new StringBuilder();
                 ArrayList<ClientPlayer> players = lobby.getLobbyParticipants();
 

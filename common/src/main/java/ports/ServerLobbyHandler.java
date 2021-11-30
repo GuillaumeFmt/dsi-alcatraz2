@@ -1,7 +1,6 @@
 package ports;
 
 import exceptions.ClientNotReachableException;
-import exceptions.ServerNotPrimaryException;
 import models.ClientPlayer;
 import models.Lobby;
 
@@ -18,7 +17,7 @@ public interface ServerLobbyHandler {
 
     List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ClientNotReachableException;
 
-    Boolean leaveLobby(ClientPlayer clientPlayer) throws ClientNotReachableException;
+    Boolean leaveLobby(String playerName, UUID lobbyId) throws ClientNotReachableException;
 
     Boolean startGame(Lobby lobby) throws ClientNotReachableException;
 

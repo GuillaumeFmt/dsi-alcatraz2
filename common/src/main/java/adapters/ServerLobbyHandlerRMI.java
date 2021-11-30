@@ -18,7 +18,7 @@ public interface ServerLobbyHandlerRMI extends Remote {
 
     List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException;
 
-    Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException;
+    Boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException;
 
     Boolean startGame(Lobby lobby) throws RemoteException;
 }
