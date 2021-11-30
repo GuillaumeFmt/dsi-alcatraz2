@@ -38,6 +38,7 @@ public class LobbyWindow extends JFrame {
     private JPanel buttonPanel;
     private JScrollPane scrollPane;
     private JTextPane textPane;
+    private JButton updateTableButton;
     private ClientPlayer clientPlayer;
     private DefaultTableModel tableModel;
     private ListSelectionModel selectionModel;
@@ -64,6 +65,7 @@ public class LobbyWindow extends JFrame {
         joinLobbyButton.addActionListener(new JoinLobbyButtonController(this, guiReceiverAdapter));
         leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this, guiReceiverAdapter));
         startGameButton.addActionListener(new StartGameButtonController(this, guiReceiverAdapter));
+        updateTableButton.addActionListener(new UpdateTableController(this, guiReceiverAdapter));
         startGameButton.setEnabled(false);
         leaveLobbyButton.setEnabled(false);
         add(mainPanel);
@@ -166,7 +168,7 @@ public class LobbyWindow extends JFrame {
         lobbyTable = new JTable();
         scrollPane.setViewportView(lobbyTable);
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        buttonPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         lobbyPanel.add(buttonPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         createLobbyButton = new JButton();
         createLobbyButton.setText("Create Lobby");
@@ -180,6 +182,9 @@ public class LobbyWindow extends JFrame {
         startGameButton = new JButton();
         startGameButton.setText("Start Game");
         buttonPanel.add(startGameButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        updateTableButton = new JButton();
+        updateTableButton.setText("Observer Fail, dare to click!");
+        buttonPanel.add(updateTableButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         textPane = new JTextPane();
         lobbyPanel.add(textPane, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
     }
