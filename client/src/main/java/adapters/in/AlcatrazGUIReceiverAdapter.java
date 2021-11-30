@@ -1,6 +1,7 @@
 package adapters.in;
 
 import core.domain.ClientState;
+import models.ClientPlayer;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;
 
@@ -36,5 +37,7 @@ public class AlcatrazGUIReceiverAdapter {
     }
 
     // TODO: implement the other methods...
+
+    public void startGame(UUID lobbyId) { alcatrazGUIReceiver.startGame(lobbyId); }
 
 }

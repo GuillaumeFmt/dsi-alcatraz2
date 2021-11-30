@@ -2,6 +2,7 @@ package adapters.in;
 
 import adapters.ServerLobbyHandlerRMI;
 import exceptions.LobbyException;
+import exceptions.ServerNotPrimaryException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
@@ -10,6 +11,7 @@ import ports.in.LobbyHandler;
 import ports.in.Registration;
 
 import java.rmi.RemoteException;
+import java.rmi.server.ServerNotActiveException;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,17 +34,17 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     }
 
     @Override
-    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException, LobbyException {
+    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException, LobbyException, ServerNotPrimaryException {
         return lobbyHandler.createLobby(lobbyName, clientPlayer);
     }
 
     @Override
-    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException {
+    public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException, LobbyException, ServerNotPrimaryException {
         return lobbyHandler.joinLobby(lobby, clientPlayer);
     }
 
     @Override
-    public Boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException {
+    public Boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException, ServerNotPrimaryException {
         return lobbyHandler.leaveLobby(playerName, lobbyId);
     }
 

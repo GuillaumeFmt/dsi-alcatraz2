@@ -9,16 +9,16 @@ import java.util.UUID;
 
 public interface ServerLobbyHandler {
 
-    UUID register (ClientPlayer clientPlayer) throws ClientNotReachableException;
+    UUID register (ClientPlayer clientPlayer);
 
-    List<Lobby> currentLobbies() throws ClientNotReachableException;
+    List<Lobby> currentLobbies();
 
-    UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws ClientNotReachableException;
+    UUID createLobby(String lobbyName, ClientPlayer clientPlayer);
 
-    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ClientNotReachableException;
+    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer);
 
-    Boolean leaveLobby(String playerName, UUID lobbyId) throws ClientNotReachableException;
+    Boolean leaveLobby(String playerName, UUID lobbyId);
 
-    Boolean startGame(Lobby lobby) throws ClientNotReachableException;
+    Boolean startGame(Lobby lobby);
 
 }

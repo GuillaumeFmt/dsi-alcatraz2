@@ -4,14 +4,11 @@ import adapters.ClientLobbyHandlerRMI;
 import adapters.in.ClientLobbyHandlerRMIStub;
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
-import core.Client;
 import core.domain.ClientState;
-import exceptions.ClientNotReachableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
-import ports.ClientLobbyHandler;
 import ports.ServerLobbyHandler;
 import ports.in.AlcatrazGUIReceiver;
 import ports.in.RemoteMoveReceiver;
@@ -21,7 +18,6 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,68 +49,51 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
         ClientState.getInstance().setLocalClientPlayer(new ClientPlayer(iPAddress, port, userName));
         registerClientMoverStub(new RemoteMoveReceiverUseCase());
         registerClientLobbyHandlerStub(new ClientLobbyHandlerUseCase());
-        try {
-            UUID id = serverLobbyHandler.register(ClientState.getInstance().getLocalClientPlayer());
-            log.info("My Player UUID: {}", id);
-
-        } catch (ClientNotReachableException e) {
-            e.printStackTrace();
-        }
+        UUID id = serverLobbyHandler.register(ClientState.getInstance().getLocalClientPlayer());
+        log.info("My Player UUID: {}", id);
     }
 
     @Override
     public Lobby createLobby(String lobbyName) {
-        try {
-            UUID id = serverLobbyHandler.createLobby(lobbyName, ClientState.getInstance().getLocalClientPlayer());
-            log.info("My Lobby UUID: {}", id);
-
-        } catch (ClientNotReachableException e) {
-            log.error("Create Lobby caused exception: {0}", e);
-        }
+        UUID id = serverLobbyHandler.createLobby(lobbyName, ClientState.getInstance().getLocalClientPlayer());
+        log.info("My Lobby UUID: {}", id);
         return null;
     }
 
     @Override
     public Lobby joinLobby(Lobby lobby, ClientPlayer clientPlayer) {
         List<ClientPlayer> currentPlayersInLobby = null;
-        try {
-            currentPlayersInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
-            if (!currentPlayersInLobby.isEmpty()) {
-                log.info("Lobby joined by player {}!", clientPlayer);
-                currentPlayersInLobby.forEach(player ->
-                        log.info("Player in Lobby: {} - {} - {}",
-                                player.getPlayerName(),
-                                player.getIp(),
-                                player.getPort())
-                );
-            }
-        } catch (ClientNotReachableException e) {
-            log.info("Retrying another server");
+        currentPlayersInLobby = serverLobbyHandler.joinLobby(lobby, clientPlayer);
+        if (!currentPlayersInLobby.isEmpty()) {
+            log.info("Lobby joined by player {}!", clientPlayer);
+            currentPlayersInLobby.forEach(player ->
+                    log.info("Player in Lobby: {} - {} - {}",
+                            player.getPlayerName(),
+                            player.getIp(),
+                            player.getPort())
+            );
         }
         return lobby;
     }
 
     @Override
     public Boolean leaveLobby(UUID lobbyId) {
-        try {
-            if (serverLobbyHandler.leaveLobby(ClientState.getInstance().getLocalClientPlayer().getPlayerName(), lobbyId)) {
-                log.info("Player {} left current lobby!", ClientState.getInstance().getLocalClientPlayer());
-                return true;
-            }
-        } catch (ClientNotReachableException e) {
-            log.info("Retrying another server");
+        if (serverLobbyHandler.leaveLobby(ClientState.getInstance().getLocalClientPlayer().getPlayerName(), lobbyId)) {
+            log.info("Player {} left current lobby!", ClientState.getInstance().getLocalClientPlayer());
+            return true;
         }
         return false;
     }
 
     @Override
     public List<Lobby> getLobbies() {
-        try {
-            return serverLobbyHandler.currentLobbies();
-        } catch (ClientNotReachableException e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return serverLobbyHandler.currentLobbies();
+    }
+
+    @Override
+    public Boolean startGame(UUID lobbyId) {
+        // TODO: implement logic
+        return null;
     }
 
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {
@@ -127,7 +106,7 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
         }
     }
 
-    private void registerClientLobbyHandlerStub(ClientLobbyHandlerUseCase clientLobbyHandlerUseCase){
+    private void registerClientLobbyHandlerStub(ClientLobbyHandlerUseCase clientLobbyHandlerUseCase) {
         try {
             ClientLobbyHandlerRMI clientLobbyHandlerRMIStub = (ClientLobbyHandlerRMI) UnicastRemoteObject.exportObject(new ClientLobbyHandlerRMIStub(clientLobbyHandlerUseCase), ClientState.getInstance().getLocalClientPlayer().getPort());
             //TODO: find a better way to name the remote object, so that server does not need to concat hardcoded

@@ -3,6 +3,7 @@ package adapters.out;
 import adapters.ServerLobbyHandlerRMI;
 import exceptions.ClientNotReachableException;
 import exceptions.LobbyException;
+import exceptions.ServerNotPrimaryException;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
@@ -14,10 +15,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.rmi.server.ServerNotActiveException;
+import java.util.*;
 
 @Slf4j
 public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
@@ -89,16 +88,19 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
                 return serverLobbyHandlerProxy.createLobby(lobbyName, clientPlayer);
             } catch (RemoteException e) {
                 log.info("Got remote exception while trying to create Lobby {}", e.getMessage());
-                reInit();
+                return null;
             } catch (LobbyException e){
                 log.error("Caught exception {}", e.toString());
                 return null;
+            } catch (ServerNotPrimaryException e) {
+                log.info("Contacted server was not primary: {}", e.toString());
+                reInit();
             }
         }
     }
 
     @Override
-    public List<Lobby> currentLobbies() throws ClientNotReachableException {
+    public List<Lobby> currentLobbies() {
         while (true) {
             try {
             return serverLobbyHandlerProxy.currentLobbies();
@@ -120,6 +122,12 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
                 e.printStackTrace();
                 log.info("Got remote exception while trying to join lobby {}", e.getMessage());
                 reInit();
+            } catch (LobbyException e) {
+                log.error("Caught exception {}", e.toString());
+                return Collections.emptyList();
+            } catch (ServerNotPrimaryException e) {
+                log.info("Contacted server was not primary: {}", e.toString());
+                reInit();
             }
         }
         //return List.of(new ClientPlayer("127.0.0.1", 9871, "Client 1"), new ClientPlayer("127.0.0.1", 9872, "Client 2"));
@@ -133,9 +141,11 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
             } catch (RemoteException e) {
                 log.info("Got remote exception while trying to leave lobby {}", e.getMessage());
                 reInit();
+            } catch (ServerNotPrimaryException e) {
+                log.info("Contacted server was not primary: {}", e.toString());
+                reInit();
             }
         }
-
     }
 
     @Override
@@ -152,6 +162,4 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     private ServerLobbyHandlerRMI getServerLobbyHandlerProxy() throws NotBoundException, RemoteException {
         return (ServerLobbyHandlerRMI) registry.lookup(serverName);
     }
-
-
 }
