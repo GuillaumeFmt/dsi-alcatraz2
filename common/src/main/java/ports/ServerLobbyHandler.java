@@ -1,6 +1,7 @@
 package ports;
 
 import exceptions.ClientNotReachableException;
+import exceptions.StartGameException;
 import models.ClientPlayer;
 import models.Lobby;
 
@@ -19,6 +20,6 @@ public interface ServerLobbyHandler {
 
     Boolean leaveLobby(String playerName, UUID lobbyId);
 
-    Boolean startGame(Lobby lobby);
+    Boolean startGame(UUID lobbyId) throws StartGameException;
 
 }

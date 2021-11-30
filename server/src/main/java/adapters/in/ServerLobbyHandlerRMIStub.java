@@ -3,15 +3,16 @@ package adapters.in;
 import adapters.ServerLobbyHandlerRMI;
 import exceptions.LobbyException;
 import exceptions.ServerNotPrimaryException;
+import exceptions.StartGameException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.in.LobbyHandler;
 import ports.in.Registration;
+import ports.in.StartGameHandler;
 
 import java.rmi.RemoteException;
-import java.rmi.server.ServerNotActiveException;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,9 +22,11 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
 
     private final Registration registration;
     private final LobbyHandler lobbyHandler;
+    private final StartGameHandler startGameHandler;
+
 
     @Override
-    public UUID register(ClientPlayer clientPlayer) throws RemoteException {
+    public UUID register(ClientPlayer clientPlayer) throws RemoteException, ServerNotPrimaryException {
         log.info("This is: {}", clientPlayer);
         return registration.addClientPlayer(clientPlayer);
     }
@@ -49,7 +52,7 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     }
 
     @Override
-    public Boolean startGame(Lobby lobby) throws RemoteException {
-        return false;
+    public Boolean startGame(UUID lobbyId) throws RemoteException, LobbyException, StartGameException {
+        return startGameHandler.startGame(lobbyId);
     }
 }

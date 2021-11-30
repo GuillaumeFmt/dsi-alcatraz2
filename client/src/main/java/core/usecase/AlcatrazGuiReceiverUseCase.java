@@ -5,6 +5,7 @@ import adapters.in.ClientLobbyHandlerRMIStub;
 import adapters.out.ClientMoverRMI;
 import adapters.out.ClientMoverRMIStub;
 import core.domain.ClientState;
+import exceptions.StartGameException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
@@ -92,8 +93,12 @@ public class AlcatrazGuiReceiverUseCase implements AlcatrazGUIReceiver {
 
     @Override
     public Boolean startGame(UUID lobbyId) {
-        // TODO: implement logic
-        return null;
+        try {
+            return serverLobbyHandler.startGame(lobbyId);
+        } catch (StartGameException e) {
+            log.error("Could not start the game {}", e.toString());
+        }
+        return false;
     }
 
     private void registerClientMoverStub(RemoteMoveReceiver remoteMoveReceiver) {

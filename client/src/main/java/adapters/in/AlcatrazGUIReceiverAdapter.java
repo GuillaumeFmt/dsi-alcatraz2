@@ -1,6 +1,7 @@
 package adapters.in;
 
 import core.domain.ClientState;
+import exceptions.StartGameException;
 import models.ClientPlayer;
 import models.Lobby;
 import ports.in.AlcatrazGUIReceiver;

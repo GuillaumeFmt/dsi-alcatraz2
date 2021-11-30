@@ -2,10 +2,12 @@ package core;
 
 import adapters.ServerLobbyHandlerRMI;
 import adapters.in.ServerLobbyHandlerRMIStub;
+import ports.in.StartGameHandler;
 import usecase.LobbyHandlerUseCase;
 import usecase.RegistrationUseCase;
 import ports.in.LobbyHandler;
 import ports.in.Registration;
+import usecase.StartGameUseCase;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -34,7 +36,7 @@ public class ServerInitializer {
 
     public void init() {
         initializeRegistry();
-        registerServerLobbyHandlerStub(new RegistrationUseCase(), new LobbyHandlerUseCase());
+        registerServerLobbyHandlerStub(new RegistrationUseCase(), new LobbyHandlerUseCase(), new StartGameUseCase());
         initializeSpreadCommunication();
     }
 
@@ -46,9 +48,9 @@ public class ServerInitializer {
         }
     }
 
-    private static void registerServerLobbyHandlerStub(Registration registration, LobbyHandler lobbyHandler) {
+    private static void registerServerLobbyHandlerStub(Registration registration, LobbyHandler lobbyHandler, StartGameHandler startGameHandler) {
         try {
-            ServerInitializer.serverLobbyHandlerRMI = new ServerLobbyHandlerRMIStub(registration,lobbyHandler);
+            ServerInitializer.serverLobbyHandlerRMI = new ServerLobbyHandlerRMIStub(registration,lobbyHandler, startGameHandler);
             final ServerLobbyHandlerRMI serverLobbyHandlerStub = ServerInitializer.serverLobbyHandlerRMI;
             ServerLobbyHandlerRMI remote = (ServerLobbyHandlerRMI) UnicastRemoteObject.exportObject(serverLobbyHandlerStub, ServerInitializer.SERVER_PORT);
             ServerInitializer.registry.rebind(SERVER_NAME, remote);
