@@ -9,6 +9,7 @@ import ports.ClientLobbyHandler;
 import ports.in.LocalMoveReceiver;
 import ports.out.ClientMover;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ClientLobbyHandlerUseCase implements ClientLobbyHandler {
     @Override
     public boolean isAlive() {
         // when client is reachable, which is the case when this method can be called simply return true
-        return false;
+        return true;
     }
 
     @Override
@@ -24,7 +25,7 @@ public class ClientLobbyHandlerUseCase implements ClientLobbyHandler {
 
         // TODO : Initialize communication with participants
 
-        List<LocalMoveReceiver> localMoveReceivers = Collections.emptyList();
+        List<LocalMoveReceiver> localMoveReceivers = new ArrayList<>();
 
         for (ClientPlayer clientPlayer: clientPlayers) {
             if (clientPlayer.getPlayerName().equals(ClientState.getInstance().getLocalClientPlayer().getPlayerName())) {
