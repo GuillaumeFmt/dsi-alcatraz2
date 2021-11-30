@@ -3,11 +3,9 @@ package model;
 import core.PrimaryServerHandler;
 import models.ClientPlayer;
 import models.Lobby;
-import spread.SpreadGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class LocalServerState implements Serializable {
 

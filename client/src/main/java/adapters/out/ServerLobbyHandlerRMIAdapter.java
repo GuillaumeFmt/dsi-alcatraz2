@@ -122,10 +122,10 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     }
 
     @Override
-    public Boolean leaveLobby(ClientPlayer clientPlayer) {
+    public Boolean leaveLobby(String playerName, UUID lobbyId) {
         while (true) {
             try {
-                return serverLobbyHandlerProxy.leaveLobby(clientPlayer);
+                return serverLobbyHandlerProxy.leaveLobby(playerName, lobbyId);
             } catch (RemoteException e) {
                 log.info("Got remote exception while trying to leave lobby {}", e.getMessage());
                 reInit();

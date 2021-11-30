@@ -14,35 +14,50 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class ServerInitializer {
 
-    private final int serverPort;
-    private final String serverName;
-    private Registry registry;
+    private static ServerInitializer instance;
 
-    public ServerInitializer(int serverPort, String serverName) {
-        this.serverPort = serverPort;
-        this.serverName = serverName;
-        try {
-            this.registry = LocateRegistry.createRegistry(9876);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+    private static final int SERVER_PORT = 9876;
+    private static final String SERVER_NAME = "RegistrationServer";
+    private static Registry registry;
+    private static ServerLobbyHandlerRMI serverLobbyHandlerRMI;
+
+    private ServerInitializer() {
+        // defeat instantiation
+    }
+
+    public static ServerInitializer getInstance() {
+        if (instance == null) {
+            instance = new ServerInitializer();
         }
+        return instance;
     }
 
     public void init() {
+        initializeRegistry();
         registerServerLobbyHandlerStub(new RegistrationUseCase(), new LobbyHandlerUseCase());
         initializeSpreadCommunication();
     }
 
-    private void registerServerLobbyHandlerStub(Registration registration, LobbyHandler lobbyHandler) {
+    private static void initializeRegistry() {
         try {
-            ServerLobbyHandlerRMI serverLobbyHandlerStub = (ServerLobbyHandlerRMI) UnicastRemoteObject.exportObject(new ServerLobbyHandlerRMIStub(registration,lobbyHandler), serverPort);
-            registry.rebind(serverName, serverLobbyHandlerStub);
+            ServerInitializer.registry = LocateRegistry.createRegistry(9876);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    private void initializeSpreadCommunication(){
+    private static void registerServerLobbyHandlerStub(Registration registration, LobbyHandler lobbyHandler) {
+        try {
+            ServerInitializer.serverLobbyHandlerRMI = new ServerLobbyHandlerRMIStub(registration,lobbyHandler);
+            final ServerLobbyHandlerRMI serverLobbyHandlerStub = ServerInitializer.serverLobbyHandlerRMI;
+            ServerLobbyHandlerRMI remote = (ServerLobbyHandlerRMI) UnicastRemoteObject.exportObject(serverLobbyHandlerStub, ServerInitializer.SERVER_PORT);
+            ServerInitializer.registry.rebind(SERVER_NAME, remote);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void initializeSpreadCommunication(){
         SpreadConnectionManager.instantiateSpreadConnectionManager();
     }
 }

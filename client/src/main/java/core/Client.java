@@ -16,8 +16,10 @@ import security.AlcatrazSecurityPolicy;
 import core.view.WelcomeWindow;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.Policy;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Client {
 
@@ -26,10 +28,27 @@ public class Client {
         Policy.setPolicy(new AlcatrazSecurityPolicy());
 
         ArrayList<RegistrationServer> servers = new ArrayList<>();
-        servers.add(new RegistrationServer("127.0.0.1", 9876));
-        servers.add(new RegistrationServer("dsiars01.westeurope.cloudapp.azure.com", 9876));
-        servers.add(new RegistrationServer("dsiars02.westeurope.cloudapp.azure.com", 9876));
-        servers.add(new RegistrationServer("dsiars03.westeurope.cloudapp.azure.com", 9876));
+
+        try (InputStream input = Client.class.getClassLoader().getResourceAsStream("server.properties")) {
+
+            Properties prop = new Properties();
+
+            if (input == null) {
+                System.out.println("Sorry, unable to find server.properties");
+                return;
+            }
+
+            //load a properties file from class path, inside static method
+            prop.load(input);
+
+            servers.add(new RegistrationServer(prop.getProperty("server1"), 9876));
+            servers.add(new RegistrationServer(prop.getProperty("server2"), 9876));
+            servers.add(new RegistrationServer(prop.getProperty("server3"), 9876));
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
 
         ServerLobbyHandler serverLobbyHandler = new ServerLobbyHandlerRMIAdapter("RegistrationServer", servers);
         AlcatrazGUIReceiver alcatrazGUIReceiver = new AlcatrazGuiReceiverUseCase(serverLobbyHandler);
@@ -40,7 +59,6 @@ public class Client {
 
         //attach the gui here
         System.in.read();
-
 
 
         ClientMover clientMover = new ClientMoverRMIAdapter(9876, "Client 2");

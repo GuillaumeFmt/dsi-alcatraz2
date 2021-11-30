@@ -12,6 +12,6 @@ public interface LobbyHandler {
     public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException;
     public List<Lobby> getCurrentLobbies();
     public List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException;
-    public boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException;
+    public boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException;
 
 }

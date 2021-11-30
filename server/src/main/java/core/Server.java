@@ -18,7 +18,7 @@ public class Server {
             System.setSecurityManager(new SecurityManager());
         }
 
-        ServerInitializer serverInitializer = new ServerInitializer(9876,"RegistrationServer");
+        ServerInitializer serverInitializer = ServerInitializer.getInstance();
         serverInitializer.init();
 
         while (true) {

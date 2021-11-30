@@ -41,8 +41,8 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     }
 
     @Override
-    public Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
-        return lobbyHandler.leaveLobby(clientPlayer);
+    public Boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException {
+        return lobbyHandler.leaveLobby(playerName, lobbyId);
     }
 
     @Override
