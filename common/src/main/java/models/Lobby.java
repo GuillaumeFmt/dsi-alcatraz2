@@ -4,7 +4,6 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @ToString
@@ -25,14 +24,6 @@ public class Lobby implements Serializable {
         this.participantCount++;
     }
 
-    public UUID getLobbyId() {
-        return lobbyId;
-    }
-
-    public String getLobbyName() {
-        return lobbyName;
-    }
-
     public void addLobbyParticipant(ClientPlayer clientPlayer) {
         if (canPlayerJoin(clientPlayer)) {
             lobbyParticipants.add(clientPlayer);
@@ -43,6 +34,26 @@ public class Lobby implements Serializable {
         this.lobbyOwner = lobbyOwner;
     }
 
+    public void setLobbyParticipants(ArrayList<ClientPlayer> lobbyParticipants) {
+        this.lobbyParticipants = lobbyParticipants;
+    }
+
+    public void setParticipantCount(int participantCount) {
+        this.participantCount = participantCount;
+    }
+
+    public void setStarted(boolean started) {
+        isStarted = started;
+    }
+
+    public UUID getLobbyId() {
+        return lobbyId;
+    }
+
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
     public ClientPlayer getLobbyOwner() {
         return lobbyOwner;
     }
@@ -51,20 +62,12 @@ public class Lobby implements Serializable {
         return lobbyParticipants;
     }
 
-    public void setLobbyParticipants(ArrayList<ClientPlayer> lobbyParticipants) {
-        this.lobbyParticipants = lobbyParticipants;
-    }
-
     public int getParticipantCount() {
         return participantCount;
     }
 
     public boolean isStarted() {
         return isStarted;
-    }
-
-    public void setStarted(boolean started) {
-        isStarted = started;
     }
 
     private boolean canPlayerJoin(ClientPlayer clientPlayer) {

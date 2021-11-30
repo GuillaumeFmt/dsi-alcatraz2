@@ -18,11 +18,11 @@ public class ClientMoverRMIAdapter implements ClientMover {
     private ClientMoverRMI clientMoverProxy;
     private final RetryOnExceptionHandler retryOnExceptionHandler;
 
-    public ClientMoverRMIAdapter(int serverPort, String remoteName) {
+    public ClientMoverRMIAdapter(int serverPort, String remoteName, String serverHost) {
         retryOnExceptionHandler = new RetryOnExceptionHandler(3, 10);
         this.remoteName = remoteName;
         try {
-            this.registry = LocateRegistry.getRegistry(serverPort);
+            this.registry = LocateRegistry.getRegistry(serverHost, serverPort);
             this.clientMoverProxy = getClientMoverProxy();
         } catch (RemoteException | NotBoundException e) {
             this.registry = null;

@@ -1,7 +1,8 @@
-package adapters;
+package adapters.in;
 
 import core.MessageHandler;
 import core.PrimaryServerHandler;
+import model.LocalServerState;
 import model.SpreadMessageData;
 import spread.BasicMessageListener;
 import spread.SpreadMessage;
@@ -20,7 +21,7 @@ public class ReplicationMessageListenerAdapter implements BasicMessageListener {
             //TODO: RECEIVE localServerState
             //TODO: UPDATE localServerSate
 
-            if(PrimaryServerHandler.getInstance().amIPrimary()){
+            if(LocalServerState.getInstance().amIPrimary()){
 
 /*                switch (spreadMessageData.getMessageType()){
                     case RECEIVED_REGISTER:

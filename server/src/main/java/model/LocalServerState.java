@@ -6,13 +6,13 @@ import models.Lobby;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class LocalServerState implements Serializable {
 
     ArrayList<Lobby> lobbyList;
     ArrayList<ClientPlayer> registeredClientPlayers;
     public String actualPrimaryServerName;
+    public String myServerName;
 
     public LocalServerState() {
         this.lobbyList = new ArrayList<Lobby>();
@@ -36,6 +36,14 @@ public class LocalServerState implements Serializable {
         this.registeredClientPlayers = registeredClientPlayers;
     }
 
+    public String getMyServerName() {
+        return myServerName;
+    }
+
+    public void setMyServerName(String myServerName) {
+        this.myServerName = myServerName;
+    }
+
     private static LocalServerState localServerStateInstance;
 
     public static LocalServerState getInstance() {
@@ -51,6 +59,14 @@ public class LocalServerState implements Serializable {
 
     public static void setLocalServerState(LocalServerState localServerState) {
         localServerStateInstance = localServerState;
+    }
+
+    public boolean amIPrimary() {
+        if (actualPrimaryServerName != null) {
+            return myServerName.equals(actualPrimaryServerName);
+        } else {
+            return false;
+        }
     }
 
     @Override

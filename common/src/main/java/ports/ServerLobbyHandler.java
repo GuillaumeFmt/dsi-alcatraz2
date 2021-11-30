@@ -1,5 +1,6 @@
 package ports;
 
+import exceptions.ClientNotReachableException;
 import models.ClientPlayer;
 import models.Lobby;
 
@@ -8,16 +9,16 @@ import java.util.UUID;
 
 public interface ServerLobbyHandler {
 
-    UUID register (ClientPlayer clientPlayer);
+    UUID register (ClientPlayer clientPlayer) throws ClientNotReachableException;
 
-    List<Lobby> currentLobbies() ;
+    List<Lobby> currentLobbies() throws ClientNotReachableException;
 
-    UUID createLobby(String lobbyName, ClientPlayer clientPlayer);
+    UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws ClientNotReachableException;
 
-    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer);
+    List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws ClientNotReachableException;
 
-    Boolean leaveLobby(ClientPlayer clientPlayer);
+    Boolean leaveLobby(String playerName, UUID lobbyId) throws ClientNotReachableException;
 
-    Boolean startGame(Lobby lobby);
+    Boolean startGame(Lobby lobby) throws ClientNotReachableException;
 
 }

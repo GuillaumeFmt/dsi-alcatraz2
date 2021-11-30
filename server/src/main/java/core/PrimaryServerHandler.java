@@ -21,21 +21,21 @@ public class PrimaryServerHandler {
     }
 
     public void setPrimary(SpreadGroup[] groupMembers) {
-        SpreadGroup myGroup = SpreadGroupState.myGroup;
+        String myGroup = LocalServerState.getInstance().getMyServerName();
 
         if (groupMembers.length == 1) {
             this.actualPrimaryServerName = groupMembers[0].toString();
             System.out.println("I am first so I am the primary");
         } else if (groupMembers.length == 2) {
             for (SpreadGroup groupMember : groupMembers) {
-                if (!groupMember.equals(myGroup)) {
+                if (!groupMember.toString().equals(myGroup)) {
                     this.actualPrimaryServerName = groupMember.toString();
                     System.out.printf("Found %s to be primary server\n", this.actualPrimaryServerName);
                 }
             }
         } else {
             for (SpreadGroup groupMember : groupMembers) {
-                if (!groupMember.equals(myGroup)) {
+                if (!groupMember.toString().equals(myGroup)) {
                     System.out.println("Asking group to send primary");
                     MessageHandler messageHandler = new MessageHandler();
                     SpreadMessageData messageData = new SpreadMessageData();
@@ -45,29 +45,14 @@ public class PrimaryServerHandler {
                 }
             }
         }
-    }
-
-    public void primaryServerElection(SpreadGroup[] groupMembers) {
-        //TODO: Überarbeiten
-        int biggest = 0;
-        SpreadGroup temporaryPrimaryServer = null;
-        for (SpreadGroup groupMember : groupMembers) {
-            int groupMemberStringLength = groupMember.toString().length();
-            int groupMemberId = Integer.getInteger(groupMember.toString().substring((groupMemberStringLength - 2), groupMemberStringLength));
-            if (biggest < groupMemberId) {
-                biggest = groupMemberId;
-                temporaryPrimaryServer = groupMember;
-            }
-        }
-        this.actualPrimaryServerName = temporaryPrimaryServer.toString();
+        LocalServerState.getInstance().setPrimary(this.actualPrimaryServerName);
     }
 
     public void handleSendPrimaryMessage(SpreadGroup sender) {
-        System.out.println(amIPrimary() ? "I am primary" : "I am not primary");
-        if (amIPrimary()){
+        System.out.println(LocalServerState.getInstance().amIPrimary() ? "I am primary" : "I am not primary");
+        if (LocalServerState.getInstance().amIPrimary()){
             MessageHandler messageHandler = new MessageHandler();
             SpreadMessageData data = new SpreadMessageData();
-            //debug - change back to PRIMARY !
             data.setMessageType(MessageType.PRIMARY);
             data.setPrimary(this.actualPrimaryServerName);
             System.out.printf("Trying to send message with type PRIMARY to %s\n", sender.toString());
@@ -76,15 +61,6 @@ public class PrimaryServerHandler {
             } catch (SpreadException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public Boolean amIPrimary() {
-        if (actualPrimaryServerName != null) {
-            SpreadGroup myGroup = SpreadGroupState.myGroup;
-            return myGroup.toString().equals(actualPrimaryServerName);
-        } else {
-            return false;
         }
     }
 

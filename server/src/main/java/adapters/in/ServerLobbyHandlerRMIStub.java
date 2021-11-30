@@ -1,5 +1,6 @@
-package adapters;
+package adapters.in;
 
+import adapters.ServerLobbyHandlerRMI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
@@ -40,8 +41,8 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     }
 
     @Override
-    public Boolean leaveLobby(ClientPlayer clientPlayer) throws RemoteException {
-        return lobbyHandler.leaveLobby(clientPlayer);
+    public Boolean leaveLobby(String playerName, UUID lobbyId) throws RemoteException {
+        return lobbyHandler.leaveLobby(playerName, lobbyId);
     }
 
     @Override
