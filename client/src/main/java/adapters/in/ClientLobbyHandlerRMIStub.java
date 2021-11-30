@@ -9,11 +9,13 @@ import java.util.List;
 public class ClientLobbyHandlerRMIStub implements ClientLobbyHandlerRMI {
     @Override
     public boolean isAlive() throws RemoteException {
-        return false;
+        // when client is reachable, which is the case when this method can be called simply return true
+        return true;
     }
 
     @Override
     public boolean initGame(List<ClientPlayer> clientPlayerList) throws RemoteException {
+        // TODO : start the game locally and initialize communication with participants
         return false;
     }
 }
