@@ -1,5 +1,6 @@
 package usecase;
 
+import exceptions.LobbyException;
 import lombok.extern.slf4j.Slf4j;
 import model.LocalServerState;
 import models.ClientPlayer;
@@ -15,7 +16,7 @@ public class LobbyHandlerUseCase implements LobbyHandler {
     // TODO: implement "wait for response behaviour" (after sending spread message to the replicas, we should wait for the ok response -> blocking approach)
 
     @Override
-    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException {
+    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException, LobbyException {
         // check if primary, otherwise throw exception and do not execute the create lobby command
         if (!LocalServerState.getInstance().amIPrimary()) {
             log.info("createLobby Request not executed, I'm not primary Server.");
@@ -31,7 +32,7 @@ public class LobbyHandlerUseCase implements LobbyHandler {
             return createLobby.getLobbyId();
         } else {
             log.error("Player already in lobby {} !", clientPlayer);
-            throw new RemoteException("Cannot create lobby!");
+            throw new LobbyException(String.format("Player %s already in lobby", clientPlayer.toString()));
         }
     }
 

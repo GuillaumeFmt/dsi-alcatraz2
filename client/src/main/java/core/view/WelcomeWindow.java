@@ -23,9 +23,9 @@ public class WelcomeWindow extends JFrame
         setSize(500,500);
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
         addActionListeners(alcatrazGUIReceiverAdapter);
         add(mainPanel);
+        setVisible(true);
     }
 
     public void addActionListeners(AlcatrazGUIReceiverAdapter alcatrazGUIReceiverAdapter)

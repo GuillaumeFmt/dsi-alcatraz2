@@ -10,7 +10,11 @@ import core.view.controller.*;
 import models.Lobby;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 @Slf4j
@@ -61,6 +65,7 @@ public class LobbyWindow extends JFrame{
         add(mainPanel);
         createTable(guiReceiverAdapter);
         setVisible(true);
+
     }
     public void createTable(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
@@ -69,6 +74,12 @@ public class LobbyWindow extends JFrame{
                 new String[]{lobbyIDColumn,lobbyNameColumn,lobbyOwnerColumn,participantsColumn,amountParticipantsColumn,isStartedColumn});
 
         lobbyTable.setModel(tableModel);
+        lobbyTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                log.info("ListSelectionListener triggered with e: {}", e.toString());
+            }
+        });
         lobbyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         try {
@@ -92,16 +103,11 @@ public class LobbyWindow extends JFrame{
                         lobby.isStarted());
             });
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("No lobbies available, exception: " + e.getMessage());
         }
     }
     public void addListeners(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
-        if(guiReceiverAdapter == null)
-        {
-            System.out.println("hallelujah");
-        }
         createLobbyButton.addActionListener(new CreateLobbyButtonController(this, guiReceiverAdapter));
         joinLobbyButton.addActionListener(new JoinLobbyButtonController(this, guiReceiverAdapter));
         leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this, guiReceiverAdapter));

@@ -1,5 +1,6 @@
 package adapters;
 
+import exceptions.LobbyException;
 import models.ClientPlayer;
 import models.Lobby;
 
@@ -14,7 +15,7 @@ public interface ServerLobbyHandlerRMI extends Remote {
 
     List<Lobby> currentLobbies() throws RemoteException;
 
-    UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException;
+    UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException, LobbyException;
 
     List<ClientPlayer> joinLobby(Lobby lobby, ClientPlayer clientPlayer) throws RemoteException;
 

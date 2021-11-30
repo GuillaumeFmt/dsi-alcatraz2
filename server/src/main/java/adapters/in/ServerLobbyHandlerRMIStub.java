@@ -1,6 +1,7 @@
 package adapters.in;
 
 import adapters.ServerLobbyHandlerRMI;
+import exceptions.LobbyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
@@ -31,7 +32,7 @@ public class ServerLobbyHandlerRMIStub implements ServerLobbyHandlerRMI {
     }
 
     @Override
-    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException {
+    public UUID createLobby(String lobbyName, ClientPlayer clientPlayer) throws RemoteException, LobbyException {
         return lobbyHandler.createLobby(lobbyName, clientPlayer);
     }
 
