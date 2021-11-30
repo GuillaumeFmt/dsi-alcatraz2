@@ -38,4 +38,6 @@ public class AlcatrazGUIReceiverAdapter {
 
     // TODO: implement the other methods...
 
+    public void startGame(UUID lobbyId) { alcatrazGUIReceiver.startGame(lobbyId); }
+
 }

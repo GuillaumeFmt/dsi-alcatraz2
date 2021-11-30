@@ -18,4 +18,6 @@ public interface AlcatrazGUIReceiver {
     public Boolean leaveLobby(UUID lobbyId);
 
     public List<Lobby> getLobbies();
+
+    public Boolean startGame(UUID lobbyId);
 }
