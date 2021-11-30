@@ -2,6 +2,7 @@ package adapters.out;
 
 import adapters.ServerLobbyHandlerRMI;
 import exceptions.ClientNotReachableException;
+import exceptions.LobbyException;
 import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
@@ -29,7 +30,7 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
     private Iterator<RegistrationServer> serverPointer;
 
     public ServerLobbyHandlerRMIAdapter(String serverName, ArrayList<RegistrationServer> servers) {
-        this.retryOnExceptionHandler = new RetryOnExceptionHandler(3, 2000);
+        this.retryOnExceptionHandler = new RetryOnExceptionHandler(10, 3000);
         this.servers = servers;
         this.serverName = serverName;
         this.serverPointer = servers.iterator();
@@ -89,6 +90,9 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
             } catch (RemoteException e) {
                 log.info("Got remote exception while trying to create Lobby {}", e.getMessage());
                 reInit();
+            } catch (LobbyException e){
+                log.error("Caught exception {}", e.toString());
+                return null;
             }
         }
     }
