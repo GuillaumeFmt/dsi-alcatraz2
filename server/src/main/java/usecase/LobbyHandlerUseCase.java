@@ -57,6 +57,9 @@ public class LobbyHandlerUseCase implements LobbyHandler {
         if (checkPlayerNotInAnyLobby(clientPlayer)) {
             lobbyToJoin.getLobbyParticipants().add(clientPlayer);
             ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
+        } else {
+            log.error("Could not add player to lobby, player {} already in another lobby", clientPlayer);
+            throw new RemoteException("Could not add player to lobby, lobby not found!");
         }
 
         return LocalServerState.getInstance().getLobbyList().stream()
@@ -74,23 +77,26 @@ public class LobbyHandlerUseCase implements LobbyHandler {
         }
 
         ArrayList<Lobby> currentLobbies = LocalServerState.getInstance().getLobbyList();
-        if (currentLobbies.stream().filter(lobby -> lobby.getLobbyId().equals(lobbyId)).count() != 1) {
+        if (currentLobbies.stream().filter(lobby -> lobby.getLobbyId().equals(lobbyId)).count() == 1) {
             currentLobbies.stream().filter(lobby -> lobby.getLobbyId().compareTo(lobbyId) == 0).findFirst().ifPresent(foundLobby -> {
                 Optional<ClientPlayer> playerToRemoveOptional = foundLobby.getLobbyParticipants().stream().filter(player -> player.getPlayerName().equals(playerName)).findFirst();
                 playerToRemoveOptional.ifPresent(playerToRemove -> {
                     foundLobby.getLobbyParticipants().remove(playerToRemove);
                     log.info("Player was removed from lobby {}", playerToRemove);
                 });
-                if (foundLobby.getLobbyOwner().getPlayerName().equals(playerName)) {
+                if (foundLobby.getLobbyOwner().getPlayerName().equals(playerName) && !foundLobby.getLobbyParticipants().isEmpty()) {
                     foundLobby.setLobbyOwner(foundLobby.getLobbyParticipants().get(0));
                     log.info("Lobby Owner was replaced. Old: {}, New: {}", playerName, foundLobby.getLobbyOwner());
+                } else if (foundLobby.getLobbyParticipants().isEmpty()) {
+                    currentLobbies.remove(foundLobby);
                 }
                 ReplicationHandlerUseCase.replicateLocalState(LocalServerState.getInstance());
             });
+            Optional<Lobby> concernedLobby = LocalServerState.getInstance().getLobbyList().stream().filter(lobby -> lobby.getLobbyId().compareTo(lobbyId) == 0).findFirst();
+            return concernedLobby.map(lobby -> lobby.getLobbyParticipants().stream().noneMatch(clientPlayer -> clientPlayer.getPlayerName().equals(playerName))).orElse(true);
+        } else {
+            return false;
         }
-
-        Optional<Lobby> concernedLobby = LocalServerState.getInstance().getLobbyList().stream().filter(lobby -> lobby.getLobbyId().compareTo(lobbyId) == 0).findFirst();
-        return (concernedLobby.isPresent() && concernedLobby.get().getLobbyParticipants().stream().noneMatch(clientPlayer -> clientPlayer.getPlayerName().equals(playerName)));
     }
 
     private boolean checkPlayerNotInAnyLobby(ClientPlayer clientPlayer) {
