@@ -99,6 +99,10 @@ public class LobbyWindow extends JFrame{
     }
     public void addListeners(AlcatrazGUIReceiverAdapter guiReceiverAdapter)
     {
+        if(guiReceiverAdapter == null)
+        {
+            System.out.println("hallelujah");
+        }
         createLobbyButton.addActionListener(new CreateLobbyButtonController(this, guiReceiverAdapter));
         joinLobbyButton.addActionListener(new JoinLobbyButtonController(this, guiReceiverAdapter));
         leaveLobbyButton.addActionListener(new LeaveLobbyButtonController(this, guiReceiverAdapter));
