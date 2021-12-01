@@ -62,6 +62,7 @@ public class LocalServerState implements Serializable {
 
     public static void setLocalServerState(LocalServerState localServerState) {
         String oldServerName = localServerStateInstance.getMyServerName();
+
         localServerStateInstance = localServerState;
         localServerStateInstance.setMyServerName(oldServerName);
     }
