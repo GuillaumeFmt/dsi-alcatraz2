@@ -1,12 +1,14 @@
 package model;
 
 import core.PrimaryServerHandler;
+import lombok.extern.slf4j.Slf4j;
 import models.ClientPlayer;
 import models.Lobby;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
+@Slf4j
 public class LocalServerState implements Serializable {
 
     ArrayList<Lobby> lobbyList;
@@ -14,7 +16,7 @@ public class LocalServerState implements Serializable {
     public String actualPrimaryServerName;
     public String myServerName;
 
-    public LocalServerState() {
+    private LocalServerState() {
         this.lobbyList = new ArrayList<Lobby>();
         this.registeredClientPlayers = new ArrayList<ClientPlayer>();
         this.actualPrimaryServerName = PrimaryServerHandler.getInstance().actualPrimaryServerName;
@@ -41,6 +43,7 @@ public class LocalServerState implements Serializable {
     }
 
     public void setMyServerName(String myServerName) {
+        log.debug("Set Servername {}", myServerName);
         this.myServerName = myServerName;
     }
 
@@ -58,11 +61,14 @@ public class LocalServerState implements Serializable {
     }
 
     public static void setLocalServerState(LocalServerState localServerState) {
+        String oldServerName = localServerStateInstance.getMyServerName();
         localServerStateInstance = localServerState;
+        localServerStateInstance.setMyServerName(oldServerName);
     }
 
     public boolean amIPrimary() {
         if (actualPrimaryServerName != null) {
+            log.debug("MyServerName {} - actual PrimaryServerName {} - compare {} ", myServerName, actualPrimaryServerName, myServerName.equals(actualPrimaryServerName ));
             return myServerName.equals(actualPrimaryServerName);
         } else {
             return false;

@@ -50,12 +50,14 @@ public class ServerLobbyHandlerRMIAdapter implements ServerLobbyHandler {
         try {
             this.registry = LocateRegistry.getRegistry(registrationServer.getHostname(), registrationServer.getPort());
             this.serverLobbyHandlerProxy = getServerLobbyHandlerProxy();
+            log.info("Successfully connected" );
         } catch (RemoteException | NotBoundException e) {
             log.error("Caught exception '{}' while trying to get remote object ServerLobbyHandler", e.toString());
             this.registry = null;
             this.serverLobbyHandlerProxy = null;
             reInit();
         }
+
     }
 
     private void reInit(){
